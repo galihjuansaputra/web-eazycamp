@@ -2,31 +2,18 @@ import {
     IconBuildingStore,
     IconDashboard,
     IconLogout,
-    IconMenu2, IconPlus,
+    IconMenu2,
     IconReceipt,
     IconUserCog,
     IconUsers
 } from "@tabler/icons-react";
 
-window.addEventListener('DOMContentLoaded', () => {
-
-    // Toggle the side navigation
-    const sidebarToggle = document.body.querySelector('#sidebarToggle');
-    if (sidebarToggle) {
-        // Uncomment Below to persist sidebar toggle between refreshes
-        // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-        //     document.body.classList.toggle('sb-sidenav-toggled');
-        // }
-        sidebarToggle.addEventListener('click', event => {
-            event.preventDefault();
-            document.body.classList.toggle('sb-sidenav-toggled');
-            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-        });
-    }
-
-});
-
 function App() {
+    const toggleSidebar = (event) => {
+        event.preventDefault();
+        document.body.classList.toggle('sb-sidenav-toggled');
+        localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
+    }
 
     return (
         <>
@@ -86,7 +73,7 @@ function App() {
                     {/* Top navigation*/}
                     <nav className="bg-dark navbar navbar-expand-lg navbar-light border-bottom">
                         <div className="container-fluid">
-                            <button className="btn btn-primary text-white" id="sidebarToggle">
+                            <button onClick={toggleSidebar} className="btn btn-primary text-white" id="sidebarToggle">
                                 <IconMenu2/>
                             </button>
                             <button
@@ -208,7 +195,8 @@ function App() {
                             </tbody>
                         </table>
 
-                        <div className="d-flex flex-column flex-sm-row flex- justify-content-between align-items-center">
+                        <div
+                            className="d-flex flex-column flex-sm-row flex- justify-content-between align-items-center">
                             <nav aria-label="Page navigation example">
                                 <ul className="pagination">
                                     <li className="page-item"><a className="page-link" href="#">Previous</a></li>
