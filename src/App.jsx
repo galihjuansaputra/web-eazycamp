@@ -1,3 +1,6 @@
+/* THIS IS A SIMPLE DASHBOARD TEMPLATE */
+/* COMPONENT INCLUDED : HEADER, SIDEBAR, TABLE, MODAL*/
+
 import {
     IconBuildingStore,
     IconDashboard,
