@@ -1,6 +1,9 @@
 function Admin() {
     return (
-        <div>Admin</div>
+        <>
+            <h1 className="my-4">Admin</h1>
+            <hr/>
+        </>
     );
 }
 

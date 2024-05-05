@@ -1,8 +1,9 @@
 function Dashboard() {
     return (
-        <div>
-            Dashboard
-        </div>
+        <>
+            <h1 className="my-4">Dashboard</h1>
+            <hr/>
+        </>
     );
 }
 

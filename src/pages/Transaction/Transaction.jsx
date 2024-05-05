@@ -1,6 +1,9 @@
 function Transaction() {
     return (
-        <div>Transaction</div>
+        <>
+            <h1 className="my-4">Transaction</h1>
+            <hr/>
+        </>
     );
 }
 

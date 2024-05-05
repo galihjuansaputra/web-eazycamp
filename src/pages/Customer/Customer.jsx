@@ -1,12 +1,8 @@
 function Customer() {
     return (
         <>
-            <h1 className="mt-4">Cutomer</h1>
-            <p>
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores cum debitis dolor dolore et fugit
-                id inventore laudantium modi nostrum, praesentium, quis suscipit temporibus tenetur totam vel veritatis,
-                vero voluptatibus.
-            </p>
+            <h1 className="my-4">Customer</h1>
+            <hr/>
 
             <div className="d-flex justify-content-between justify-content-center mb-3">
 

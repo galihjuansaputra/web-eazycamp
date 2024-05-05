@@ -1,6 +1,9 @@
 function Products() {
     return (
-        <div>Products</div>
+        <>
+            <h1 className="my-4">Products</h1>
+            <hr/>
+        </>
     );
 }
 
