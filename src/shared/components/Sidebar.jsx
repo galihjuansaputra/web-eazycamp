@@ -39,7 +39,7 @@ function Sidebar() {
                             Admin
                     </Link>
 
-                    <Link to="/" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
+                    <Link to="/login" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
                             <IconLogout style={{marginRight: 10}}/>
                             Log Out
                     </Link>
