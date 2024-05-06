@@ -7,6 +7,7 @@ import Dashboard from "@pages/Dashboard/Dashboard.jsx";
 import Products from "@pages/Products/Products.jsx";
 import Transaction from "@pages/Transaction/Transaction.jsx";
 import Admin from "@pages/Admin/Admin.jsx";
+import ProtectedRoute from "@/routes/protectedRoute.jsx";
 
 const router = createBrowserRouter([
     {
@@ -20,7 +21,9 @@ const router = createBrowserRouter([
     {
         path: "/dashboard",
         element: (
+            <ProtectedRoute>
                 <DashboardLayout/>
+            </ProtectedRoute>
         ),
         children: [
             {
