@@ -1,5 +1,5 @@
 import {useEffect, useMemo} from "react";
-import AuthService from "@services/AuthService.jsx";
+import AuthService from "@services/AuthService.js";
 import {Link, useNavigate} from "react-router-dom";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";

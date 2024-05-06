@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
-import AuthService from "@services/AuthService";
+import AuthService from "@services/AuthService.js";
 
 function ProtectedRoute({ children }) {
     const authService = AuthService();

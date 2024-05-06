@@ -4,10 +4,14 @@ import "@/index.scss";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import {RouterProvider} from "react-router-dom";
 import router from "@/routes/route.jsx";
+import { QueryClient, QueryClientProvider } from "react-query";
 
+const client = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <RouterProvider router={router}/>
-  </React.StrictMode>,
+    <React.StrictMode>
+        <QueryClientProvider client={client}>
+            <RouterProvider router={router}/>
+        </QueryClientProvider>
+    </React.StrictMode>,
 )
