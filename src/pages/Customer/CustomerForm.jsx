@@ -5,6 +5,8 @@ import * as z from "zod";
 import {useEffect} from "react";
 import CustomerService from "@services/CustomerService.js";
 import AuthService from "@services/AuthService.js";
+import * as bootstrap from 'bootstrap';
+import Swal from "sweetalert2";
 
 const createSchema = z.object({
     id: z.string().optional(),
@@ -26,7 +28,7 @@ const customerService = CustomerService();
 const authService = AuthService();
 
 
-function CustomerForm() {
+function CustomerForm(refetch) {
     const {id} = useParams();
 
     const {
@@ -79,7 +81,7 @@ function CustomerForm() {
                 console.log(err);
             }
         }
-
+        refetch.refetch();
     };
 
     const clearForm = () => {
@@ -89,6 +91,10 @@ function CustomerForm() {
 
     useEffect(() => {
         if (id) {
+            window.onload = () => {
+                const myModal = new bootstrap.Modal('#staticBackdrop');
+                myModal.show();
+            }
             const getProductById = async () => {
                 try {
                     const response = await customerService.getById(id);
@@ -100,9 +106,23 @@ function CustomerForm() {
                     trigger();
                 } catch (error) {
                     console.log(error);
+                    await navigate("/dashboard/customer");
+                    Swal.fire({
+                        title: "Error",
+                        text: error,
+                        icon: "error",
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    })
+
                 }
             };
             getProductById();
+        } else {
+            clearForm();
         }
     }, [id, setValue, trigger]);
 
@@ -115,8 +135,6 @@ function CustomerForm() {
                 data-bs-backdrop="static"
                 data-bs-keyboard="false"
                 tabIndex={-1}
-                aria-labelledby="staticBackdropLabel"
-                aria-hidden="true"
             >
                 <div className="modal-dialog modal-dialog-centered">
                     <div className="modal-content">
@@ -186,6 +204,7 @@ function CustomerForm() {
                     </div>
                 </div>
             </div>
+
         </>
     );
 }

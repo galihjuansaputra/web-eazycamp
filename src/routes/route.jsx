@@ -1,6 +1,5 @@
 import {createBrowserRouter} from "react-router-dom";
 import DashboardLayout from "@/layout/DashboardLayout.jsx";
-import CustomerList from "@pages/Customer/CustomerList.jsx";
 import Home from "@pages/Home/Home.jsx";
 import Login from "@pages/Authentication/Login/Login.jsx";
 import Dashboard from "@pages/Dashboard/Dashboard.jsx";
@@ -41,15 +40,7 @@ const router = createBrowserRouter([
                 element: <Customer/>,
                 children: [
                     {
-                        index: true,
-                        element: <CustomerList />,
-                    },
-                    {
-                        path: "new",
-                        element: <CustomerForm />,
-                    },
-                    {
-                        path: "update/:id",
+                        path: ":id",
                         element: <CustomerForm />,
                     },
                 ],

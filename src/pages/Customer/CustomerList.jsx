@@ -1,9 +1,9 @@
 import CustomerForm from "@pages/Customer/CustomerForm.jsx";
-import {useEffect, useMemo, useState} from "react";
-import {Link, Outlet, useNavigate, useSearchParams} from "react-router-dom";
+import {useMemo, useState} from "react";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import CustomerService from "@services/CustomerService.js";
 import {useForm} from "react-hook-form";
-import {IconEdit, IconHttpDelete, IconTrash} from "@tabler/icons-react";
+import {IconEdit, IconTrash} from "@tabler/icons-react";
 import {useQuery} from "react-query";
 import Loading from "@shared/components/Loading.jsx";
 
@@ -51,7 +51,8 @@ function CustomerList() {
         try {
             const response = await customerService.deleteById(id);
             if (response.statusCode === 200) {
-                refreshData();
+                const data = await customerService.getAll();
+                setPaging(data.paging);
             }
         } catch (error) {
             console.log(error);
@@ -76,9 +77,6 @@ function CustomerList() {
         return <Loading/>;
     }
 
-    const refreshData = () => {
-        refetch();
-    }
 
     return (
         <>
@@ -104,7 +102,6 @@ function CustomerList() {
                 </form>
                 {/* Button trigger modal */}
                 <div>
-
                     <button
                         type="button"
                         className="btn btn-primary text-white ms-3"
@@ -150,7 +147,7 @@ function CustomerList() {
                             </td>
                             <td>
                                 <button
-                                    onClick={()=> {navigate(`/dashboard/customer/update/${customer.id}`,{replace: false})}}
+                                    onClick={()=> {navigate(`/dashboard/customer/${customer.id}`,{replace: false})}}
                                     type="button"
                                     className="btn btn-sm btn-secondary me-1 text-white"
                                     data-bs-toggle="modal"
@@ -219,6 +216,7 @@ function CustomerList() {
                     </ul>
                 </nav>
             </div>
+            <CustomerForm refetch={refetch}/>
         </>
     );
 }
