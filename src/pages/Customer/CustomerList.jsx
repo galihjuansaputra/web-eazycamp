@@ -56,6 +56,7 @@ function CustomerList() {
             if (response.statusCode === 200) {
                 const data = await customerService.getAll();
                 setPaging(data.paging);
+                await refetch()
             }
         } catch (error) {
             console.log(error);
