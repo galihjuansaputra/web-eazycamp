@@ -74,7 +74,8 @@ function CustomerForm(refetch) {
                     phone: data.phone,
                 };
                 console.log(customer)
-                await authService.registerCustomer(customer);
+                const response = await authService.registerCustomer(customer);
+                console.log(response)
                 clearForm();
                 navigate("/dashboard/customer");
             } catch (err) {
@@ -186,7 +187,7 @@ function CustomerForm(refetch) {
 
                             </div>
                             <div className="modal-footer">
-                                <button type="submit" className="btn btn-success text-white"
+                                <button disabled={!isValid} type="submit" className="btn btn-success text-white"
                                         data-bs-dismiss="modal">
                                     Save
                                 </button>

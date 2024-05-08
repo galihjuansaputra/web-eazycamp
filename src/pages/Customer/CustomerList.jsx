@@ -6,6 +6,7 @@ import {useForm} from "react-hook-form";
 import {IconEdit, IconTrash} from "@tabler/icons-react";
 import {useQuery} from "react-query";
 import Loading from "@shared/components/Loading.jsx";
+import CustomerCart from "@pages/Customer/CustomerCart.jsx";
 
 function CustomerList() {
     const [searchParam, setSearchParam] = useSearchParams();
@@ -15,6 +16,8 @@ function CustomerList() {
     const navigate = useNavigate();
 
     const search = searchParam.get("name") || "";
+    const direction = searchParam.get("direction") || "asc";
+    const sortBy = searchParam.get("sortBy") || "name";
     const page = searchParam.get("page") || "1";
     const size = searchParam.get("size") || "10";
 
@@ -28,22 +31,22 @@ function CustomerList() {
     });
 
     const onSubmitSearch = ({search}) => {
-        setSearchParam({name: search || "", page: "1", size: "10"});
+        setSearchParam({name: search || "",direction: direction, page: "1", size: size, sortBy: sortBy});
     };
 
     const handleNextPage = () => {
         if (page >= paging.totalPages) return;
-        setSearchParam({name: "", page: +page + 1, size: size});
+        setSearchParam({name: "", page: +page + 1, size: size, direction: direction, sortBy: sortBy});
     };
 
     const handlePreviousPage = () => {
         if (page <= 1) return;
-        setSearchParam({name: "", page: +page - 1, size: size});
+        setSearchParam({name: "", page: +page - 1, size: size, direction: direction, sortBy: sortBy});
     };
 
     const navigatePage = (page) => {
         if (!page) return;
-        setSearchParam({name: "", page: page, size: size});
+        setSearchParam({name: "", page: page, size: size, direction: direction, sortBy: sortBy});
     };
 
     const handleDelete = async (id) => {
@@ -60,12 +63,14 @@ function CustomerList() {
     };
 
     const {data, isLoading, refetch} = useQuery({
-        queryKey: ["customers", search, page, size],
+        queryKey: ["customers", search, page, size, sortBy, direction],
         queryFn: async () => {
             return await customerService.getAll({
                 name: search,
                 page: page,
                 size: size,
+                direction: direction,
+                sortBy: sortBy,
             });
         },
         onSuccess: (data) => {
@@ -85,7 +90,7 @@ function CustomerList() {
 
 
             <div className="d-flex justify-content-between justify-content-center mb-3">
-                <form onSubmit={handleSubmit(onSubmitSearch)} autoComplete="off">
+                <form className="flex-fill" onSubmit={handleSubmit(onSubmitSearch)} autoComplete="off">
                     <div className="input-group w-auto">
 
                         <input
@@ -93,26 +98,46 @@ function CustomerList() {
                             type="search"
                             name="search"
                             id="search"
-                            className="form-control" placeholder="Search by name"
+                            className="form-control w-25" placeholder="Search by name"
                             aria-label="Recipient's username" aria-describedby="button-addon2"/>
-                        <button className="btn btn-outline-secondary" type="submit" id="button-addon2">Search
+
+                        <select value={direction} className="form-select w-25" id="inputGroupSelect01"
+                                onChange={(e) => {
+                                    setSearchParam({ name: search, page, size, sortBy, direction: e.target.value });
+                                }}
+                        >
+                            <option value="asc">Asc</option>
+                            <option value="desc">Desc</option>
+                        </select>
+
+                        <select value={size} className="form-select w-25" id="inputGroupSelect02"
+                                onChange={(e) => {
+                                    setSearchParam({ name: search, page, direction, sortBy, size: e.target.value });
+                                }}
+                        >
+                            <option value="10">10</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+
+                        <button className="btn btn-outline-secondary w-25" type="submit" id="button-addon2">Search
                         </button>
 
                     </div>
                 </form>
-                {/* Button trigger modal */}
-                <div>
-                    <button
-                        type="button"
-                        className="btn btn-primary text-white ms-3"
-                        data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop"
-                    >
-                        Add Data
-                    </button>
-                </div>
 
 
+            </div>
+            {/* Button trigger modal */}
+            <div>
+                <button
+                    type="button"
+                    className="btn btn-primary text-white mb-3"
+                    data-bs-toggle="modal"
+                    data-bs-target="#staticBackdrop"
+                >
+                    Register Customer
+                </button>
             </div>
 
             <table className="table">
@@ -140,7 +165,7 @@ function CustomerList() {
                                     type="button"
                                     className="btn btn-sm btn-info text-white"
                                     data-bs-toggle="modal"
-                                    data-bs-target="#staticBackdrop"
+                                    data-bs-target="#staticBackdropCart"
                                 >
                                     Detail
                                 </button>
@@ -174,7 +199,7 @@ function CustomerList() {
                     Show data {data && data.data?.length} of {paging.totalElement}
                 </small>
                 <nav aria-label="Page navigation example">
-                    <ul className="pagination">
+                    <ul className="pagination mb-sm-0">
                         <li
                             className={`page-item ${!paging.hasPrevious ? "disabled" : ""}`}
                         >
@@ -217,6 +242,7 @@ function CustomerList() {
                 </nav>
             </div>
             <CustomerForm refetch={refetch}/>
+            <CustomerCart/>
         </>
     );
 }
