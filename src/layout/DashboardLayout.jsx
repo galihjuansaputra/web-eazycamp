@@ -1,11 +1,9 @@
 import Sidebar from "@shared/components/Sidebar.jsx";
 import Header from "@shared/components/Header.jsx";
-import {Outlet, useLocation} from "react-router-dom";
+import {Outlet} from "react-router-dom";
 import Breadcrumbs from "@shared/components/Breadcrumbs.jsx";
 
 function DashboardLayout() {
-
-
 
     return (
         <>
@@ -19,7 +17,7 @@ function DashboardLayout() {
                     <Header/>
 
                     {/* Page content*/}
-                    <div className="container-fluid">
+                    <div className="container-fluid mb-3">
                         <Breadcrumbs />
                         <Outlet/>
 

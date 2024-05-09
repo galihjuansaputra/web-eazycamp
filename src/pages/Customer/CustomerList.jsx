@@ -86,10 +86,6 @@ function CustomerList() {
 
     return (
         <>
-            <h1 className="my-4">Customer</h1>
-            <hr/>
-
-
             <div className="d-flex justify-content-between justify-content-center mb-3">
                 <form className="flex-fill" onSubmit={handleSubmit(onSubmitSearch)} autoComplete="off">
                     <div className="input-group w-auto">

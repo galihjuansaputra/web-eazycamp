@@ -16,13 +16,9 @@ function Header() {
                         <IconMenu2/>
                     </button>
                     <div>
-                        <ul className="navbar-nav ms-auto mt-2 mt-lg-0">
-                            <li className="nav-item active">
-                                <a className="nav-link">
-                                    {user.username}
-                                </a>
-                            </li>
-                        </ul>
+                        <span>
+                            {user.username}
+                        </span>
                     </div>
                 </div>
             </nav>

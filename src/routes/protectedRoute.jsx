@@ -28,9 +28,6 @@ function ProtectedRoute({ children }) {
                 });
             }
         }
-
-        console.log(storage.roles);
-
         checkAdmin();
         checkToken();
     }, [authService, navigate]);

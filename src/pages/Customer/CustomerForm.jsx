@@ -96,6 +96,7 @@ function CustomerForm(refetch) {
                 const myModal = new bootstrap.Modal('#staticBackdrop');
                 myModal.show();
             }
+
             const getProductById = async () => {
                 try {
                     const response = await customerService.getById(id);
