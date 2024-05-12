@@ -1,16 +1,17 @@
-import CustomerForm from "@pages/Customer/CustomerForm.jsx";
-import {useMemo, useState} from "react";
+import {IconChevronDown} from "@tabler/icons-react";
 import {useNavigate, useSearchParams} from "react-router-dom";
-import CustomerService from "@services/CustomerService.js";
+import {useMemo, useState} from "react";
+import LocationService from "@services/LocationService.js";
 import {useForm} from "react-hook-form";
-import {IconEdit, IconTrash} from "@tabler/icons-react";
 import {useQuery} from "react-query";
 import Loading from "@shared/components/Loading.jsx";
-import CustomerCart from "@pages/Customer/CustomerCart.jsx";
+import React from "react";
+import LocationForm from "@pages/Location/LocationForm.jsx";
 
-function CustomerList() {
+function LocationList() {
+
     const [searchParam, setSearchParam] = useSearchParams();
-    const customerService = useMemo(() => CustomerService(), []);
+    const customerService = useMemo(() => LocationService(), []);
     const {handleSubmit, register} = useForm();
 
     const navigate = useNavigate();
@@ -47,20 +48,6 @@ function CustomerList() {
     const navigatePage = (page) => {
         if (!page) return;
         setSearchParam({name: "", page: page, size: size, direction: direction, sortBy: sortBy});
-    };
-
-    const handleDelete = async (id) => {
-        if (!confirm("apakah yakin customer ini ingin dihapus?")) return;
-        try {
-            const response = await customerService.deleteById(id);
-            if (response.statusCode === 200) {
-                const data = await customerService.getAll();
-                setPaging(data.paging);
-                await refetch()
-            }
-        } catch (error) {
-            console.log(error);
-        }
     };
 
     const {data, isLoading, refetch} = useQuery({
@@ -122,9 +109,8 @@ function CustomerList() {
 
                     </div>
                 </form>
-
-
             </div>
+
             {/* Button trigger modal */}
             <div>
                 <button
@@ -133,64 +119,97 @@ function CustomerList() {
                     data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop"
                 >
-                    Register Customer
+                    Add Location
                 </button>
             </div>
             <div className="table-responsive">
-                <table className="table">
+                <table className="table table-hover table-striped align-middle">
                     <thead className="table-dark">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Username</th>
-                        <th scope="col">Phone Number</th>
-                        <th scope="col">Cart</th>
+                        <th scope="col">Location Name</th>
+                        <th scope="col">Description</th>
                         <th scope="col">Action</th>
+
                     </tr>
                     </thead>
-                    <tbody>
 
                     {data &&
-                        data.data.map((customer, index) => (
-                            <tr key={customer.id}>
-                                <th scope="row">{++index}</th>
-                                <td>{customer.name}</td>
-                                <td>{customer.userAccount && customer.userAccount.username}</td>
-                                <td>{customer.phone}</td>
-                                <td>
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm btn-info text-white"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdropCart"
-                                    >
-                                        Detail
-                                    </button>
-                                </td>
-                                <td>
-                                    <button
-                                        onClick={() => {
-                                            navigate(`/dashboard/customer/${customer.id}`, {replace: false})
-                                        }}
-                                        type="button"
-                                        className="btn btn-sm btn-secondary me-1 text-white"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop"
-                                    >
-                                        <IconEdit style={{width: 18}}/>
-                                    </button>
+                        data.data.map((location, index) => (
+                            <React.Fragment key={location.id}>
+                                <tbody className="cursor-pointer" data-bs-toggle="collapse"
+                                       data-bs-target={`#${location.id}`} aria-expanded="false"
+                                       aria-controls="collapseExample">
+                                <tr>
+                                    <th scope="col">{++index}</th>
+                                    <td scope="col">{location.name}</td>
+                                    <td scope="col">{location.description}</td>
+                                    <td scope="col"><IconChevronDown size={32}/></td>
+                                </tr>
+                                </tbody>
 
-                                    <button
-                                        onClick={() => handleDelete(customer.id)}
-                                        className="btn btn-sm btn-danger text-white"
-                                    >
-                                        <IconTrash style={{width: 18}}/>
-                                    </button>
-                                </td>
-                            </tr>
+                                <tbody>
+                                <tr>
+                                    <td colSpan="4" className="m-0 p-0 border-0 table-dark">
+
+                                        <div className="collapse" id={location.id}>
+                                            <div className="container-fluid my-3">
+                                                <div id={`carouselExampleIndicators-${location.id}`}
+                                                     className="carousel slide">
+                                                    <div className="carousel-indicators">
+                                                        {location.images && location.images.map((image, index) => (
+                                                            <button
+                                                                key={index}
+                                                                type="button"
+                                                                data-bs-target={`#carouselExampleIndicators-${location.id}`}
+                                                                data-bs-slide-to={index}
+                                                                className={index === 0 ? "active" : ""}
+                                                                aria-current={index === 0 ? "true" : undefined}
+                                                                aria-label={`Slide ${index + 1}`}
+                                                            ></button>
+                                                        ))}
+                                                    </div>
+
+                                                    <div className="carousel-inner">
+                                                        {location.images && location.images.map((image, index) => (
+                                                            <div key={index}
+                                                                 className={`carousel-item ${index === 0 ? 'active' : ''}`}>
+                                                                <img src={image.url} className="d-block w-100"
+                                                                     style={{height: 240, objectFit: "cover"}}
+                                                                     alt={image.url}/>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+
+                                                    <button className="carousel-control-prev" type="button"
+                                                            data-bs-target={`#carouselExampleIndicators-${location.id}`}
+                                                            data-bs-slide="prev">
+                                                    <span className="carousel-control-prev-icon"
+                                                          aria-hidden="true"></span>
+                                                        <span className="visually-hidden">Previous</span>
+                                                    </button>
+                                                    <button className="carousel-control-next" type="button"
+                                                            data-bs-target={`#carouselExampleIndicators-${location.id}`}
+                                                            data-bs-slide="next">
+                                                    <span className="carousel-control-next-icon"
+                                                          aria-hidden="true"></span>
+                                                        <span className="visually-hidden">Next</span>
+                                                    </button>
+                                                </div>
+
+                                                <h6 className="fw-bold mt-3">Recommended Activity</h6>
+                                                <p className="fw-light">{location.recommendedActivity}</p>
+                                                <h6 className="fw-bold">Safety Tips</h6>
+                                                <p className="fw-light">{location.safetyTips}</p>
+                                            </div>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                                </tbody>
+
+                            </React.Fragment>
                         ))}
-
-                    </tbody>
                 </table>
             </div>
 
@@ -241,10 +260,9 @@ function CustomerList() {
                     </ul>
                 </nav>
             </div>
-            <CustomerForm refetch={refetch}/>
-            <CustomerCart/>
+            <LocationForm refetch={refetch}/>
         </>
     );
 }
 
-export default CustomerList;
+export default LocationList;

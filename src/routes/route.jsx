@@ -10,6 +10,7 @@ import ProtectedRoute from "@/routes/protectedRoute.jsx";
 import CustomerForm from "@pages/Customer/CustomerForm.jsx";
 import Customer from "@pages/Customer/Customer.jsx";
 import Location from "@pages/Location/Location.jsx";
+import LocationForm from "@pages/Location/LocationForm.jsx";
 
 const router = createBrowserRouter([
     {
