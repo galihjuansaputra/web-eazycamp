@@ -1,20 +1,21 @@
-import {IconChevronDown} from "@tabler/icons-react";
+import {IconChevronDown, IconEdit, IconTrash} from "@tabler/icons-react";
 import {useNavigate, useSearchParams} from "react-router-dom";
 import {useMemo, useState} from "react";
-import LocationService from "@services/LocationService.js";
+import EquipmentService from "@services/EquipmentService.js";
 import {useForm} from "react-hook-form";
 import {useQuery} from "react-query";
 import Loading from "@shared/components/Loading.jsx";
 import React from "react";
-import LocationForm from "@pages/Location/LocationForm.jsx";
+import EquipmentForm from "@pages/Equipment/EquipmentForm.jsx";
 
-function LocationList() {
+function EquipmentList() {
 
     const [searchParam, setSearchParam] = useSearchParams();
-    const locationService = useMemo(() => LocationService(), []);
+    const equipmentService = useMemo(() => EquipmentService(), []);
     const {handleSubmit, register} = useForm();
 
     const navigate = useNavigate();
+    const [equipmentId, setEquipmentId] = useState();
 
     const search = searchParam.get("name") || "";
     const direction = searchParam.get("direction") || "asc";
@@ -30,6 +31,10 @@ function LocationList() {
         hasPrevious: false,
         hasNext: false,
     });
+
+    const selectId = async (id) => {
+        setEquipmentId(id)
+    }
 
     const onSubmitSearch = ({search}) => {
         setSearchParam({name: search || "", direction: direction, page: "1", size: size, sortBy: sortBy});
@@ -51,9 +56,9 @@ function LocationList() {
     };
 
     const {data, isLoading, refetch} = useQuery({
-        queryKey: ["locations", search, page, size, sortBy, direction],
+        queryKey: ["equipments", search, page, size, sortBy, direction],
         queryFn: async () => {
-            return await locationService.getAll({
+            return await equipmentService.getAll({
                 name: search,
                 page: page,
                 size: size,
@@ -65,6 +70,11 @@ function LocationList() {
             setPaging(data.paging);
         },
     });
+
+    const separateThousands = (number) => {
+        return number.toLocaleString();
+    }
+
 
     if (isLoading) {
         return <Loading/>;
@@ -119,49 +129,88 @@ function LocationList() {
                     data-bs-toggle="modal"
                     data-bs-target="#staticBackdrop"
                 >
-                    Add Location
+                    Add Equipment
                 </button>
             </div>
             <div className="table-responsive">
-                <table className="table table-hover table-striped align-middle">
+                <table className="table table-striped align-middle">
                     <thead className="table-dark">
                     <tr>
                         <th scope="col">#</th>
-                        <th scope="col">Location Name</th>
-                        <th scope="col">Description</th>
+                        <th scope="col">Image</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Stock</th>
                         <th scope="col">Action</th>
+                        <th scope="col"></th>
 
                     </tr>
                     </thead>
 
                     {data &&
-                        data.data.map((location, index) => (
-                            <React.Fragment key={location.id}>
-                                <tbody className="cursor-pointer" data-bs-toggle="collapse"
-                                       data-bs-target={`#${location.id}`} aria-expanded="false"
-                                       aria-controls="collapseExample">
+                        data.data.map((equipment, index) => (
+                            <React.Fragment key={equipment.id}>
+                                <tbody>
                                 <tr>
                                     <th scope="col">{++index}</th>
-                                    <td scope="col">{location.name}</td>
-                                    <td scope="col">{location.description}</td>
-                                    <td scope="col"><IconChevronDown size={32}/></td>
+                                    <td scope="col">
+                                        <div style={{width: 72, height: 72}}>
+                                            <img
+                                                src={equipment.images[0].url}
+                                                style={{objectFit: "contain"}}
+                                                className="img-thumbnail img-fluid w-100 h-100"
+                                            />
+                                        </div>
+                                    </td>
+                                    <td scope="col">
+                                        <div className="fw-bold">{equipment.name}</div>
+                                        <div className="fw-light">Rp. {separateThousands(equipment.price)}</div>
+                                    </td>
+                                    <td scope="col">{equipment.stock}</td>
+                                    <td scope="col">
+                                        <div>
+                                            <button
+                                                onClick={() => {
+                                                    selectId(equipment.id)
+                                                }}
+                                                type="button"
+                                                className="btn btn-sm btn-secondary me-1 text-white"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#staticBackdrop"
+                                            >
+                                                <IconEdit style={{width: 18}}/>
+                                            </button>
+                                            <button className="btn btn-danger btn-sm text-white">
+                                                <IconTrash style={{width: 18}}/>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td scope="col">
+                                        <button
+                                            data-bs-toggle="collapse"
+                                            data-bs-target={`#${equipment.id}`} aria-expanded="false"
+                                            aria-controls="collapseExample"
+                                            className="btn btn-info text-white d-flex justify-content-center align-items-center"
+                                            style={{width: 36, height: 36, padding: 0}}>
+                                            <IconChevronDown/>
+                                        </button>
+                                    </td>
                                 </tr>
                                 </tbody>
 
                                 <tbody>
                                 <tr>
-                                    <td colSpan="4" className="m-0 p-0 border-0 table-dark">
+                                    <td colSpan="7" className="m-0 p-0 border-0 table-dark">
 
-                                        <div className="collapse" id={location.id}>
+                                        <div className="collapse" id={equipment.id}>
                                             <div className="container-fluid my-3">
-                                                <div id={`carouselExampleIndicators-${location.id}`}
+                                                <div id={`carouselExampleIndicators-${equipment.id}`}
                                                      className="carousel slide">
                                                     <div className="carousel-indicators">
-                                                        {location.images && location.images.map((image, index) => (
+                                                        {equipment.images && equipment.images.map((image, index) => (
                                                             <button
                                                                 key={index}
                                                                 type="button"
-                                                                data-bs-target={`#carouselExampleIndicators-${location.id}`}
+                                                                data-bs-target={`#carouselExampleIndicators-${equipment.id}`}
                                                                 data-bs-slide-to={index}
                                                                 className={index === 0 ? "active" : ""}
                                                                 aria-current={index === 0 ? "true" : undefined}
@@ -171,7 +220,7 @@ function LocationList() {
                                                     </div>
 
                                                     <div className="carousel-inner">
-                                                        {location.images && location.images.map((image, index) => (
+                                                        {equipment.images && equipment.images.map((image, index) => (
                                                             <div key={index}
                                                                  className={`carousel-item ${index === 0 ? 'active' : ''}`}>
                                                                 <img src={image.url} className="d-block w-100"
@@ -182,14 +231,14 @@ function LocationList() {
                                                     </div>
 
                                                     <button className="carousel-control-prev" type="button"
-                                                            data-bs-target={`#carouselExampleIndicators-${location.id}`}
+                                                            data-bs-target={`#carouselExampleIndicators-${equipment.id}`}
                                                             data-bs-slide="prev">
                                                     <span className="carousel-control-prev-icon"
                                                           aria-hidden="true"></span>
                                                         <span className="visually-hidden">Previous</span>
                                                     </button>
                                                     <button className="carousel-control-next" type="button"
-                                                            data-bs-target={`#carouselExampleIndicators-${location.id}`}
+                                                            data-bs-target={`#carouselExampleIndicators-${equipment.id}`}
                                                             data-bs-slide="next">
                                                     <span className="carousel-control-next-icon"
                                                           aria-hidden="true"></span>
@@ -197,10 +246,8 @@ function LocationList() {
                                                     </button>
                                                 </div>
 
-                                                <h6 className="fw-bold mt-3">Recommended Activity</h6>
-                                                <p className="fw-light">{location.recommendedActivity}</p>
-                                                <h6 className="fw-bold">Safety Tips</h6>
-                                                <p className="fw-light">{location.safetyTips}</p>
+                                                <h6 className="fw-bold mt-3">Product Description</h6>
+                                                <p className="fw-light">{equipment.description}</p>
                                             </div>
                                         </div>
 
@@ -260,9 +307,9 @@ function LocationList() {
                     </ul>
                 </nav>
             </div>
-            <LocationForm refetch={refetch}/>
+            <EquipmentForm refetch={refetch} equipmentId={equipmentId}/>
         </>
     );
 }
 
-export default LocationList;
+export default EquipmentList;

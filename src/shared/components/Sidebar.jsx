@@ -2,7 +2,7 @@ import {
     IconBuildingStore,
     IconDashboard,
     IconLogout,
-    IconMountain,
+    IconMountain, IconPick,
     IconReceipt,
     IconUserCog,
     IconUsers
@@ -45,9 +45,9 @@ function Sidebar() {
                             <span>Dashboard</span>
                     </Link>
 
-                    <Link to="/dashboard/products" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
-                        <IconBuildingStore style={{marginRight: 10}}/>
-                        <span>Products</span>
+                    <Link to="/dashboard/equipment" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
+                        <IconPick style={{marginRight: 10}}/>
+                        <span>Equipment</span>
                     </Link>
 
                     <Link to="/dashboard/location" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">

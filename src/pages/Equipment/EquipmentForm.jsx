@@ -5,20 +5,20 @@ import * as z from "zod";
 import {useEffect, useState} from "react";
 import * as bootstrap from 'bootstrap';
 import Swal from "sweetalert2";
-import LocationService from "@services/LocationService.js";
+import EquipmentService from "@services/EquipmentService.js";
 
 const createSchema = z.object({
     id: z.string().optional(),
     name: z.string().min(1, "Name must be filled!"),
     description: z.string().min(1, "Description must be filled!"),
-    recommendedActivity: z.string().min(1, "Recommended activity must be filled!"),
-    safetyTips: z.string().min(1, "Safety tips must be filled!"),
+    price: z.string().min(1, "Recommended activity must be filled!"),
+    stock: z.string().min(1, "Safety tips must be filled!"),
     images: z.any()
 });
 
-const locationService = LocationService();
+const equipmentService = EquipmentService();
 
-function LocationForm(refetch) {
+function EquipmentForm({refetch, equipmentId}) {
 
     const {
         register,
@@ -48,35 +48,62 @@ function LocationForm(refetch) {
     const handleBack = () => {
         clearForm();
         setPreviewImage(["https://lh5.googleusercontent.com/proxy/t08n2HuxPfw8OpbutGWjekHAgxfPFv-pZZ5_-uTfhEGK8B5Lp-VN4VjrdxKtr8acgJA93S14m9NdELzjafFfy13b68pQ7zzDiAmn4Xg8LvsTw1jogn_7wStYeOx7ojx5h63Gliw"])
-
-        navigate("/dashboard/location");
+        navigate("/dashboard/equipment");
     };
 
     const onSubmit = async (data) => {
-        try {
-            const form = new FormData();
+        if (data.id){
+            try {
+                const form = new FormData();
 
-            // Serialize location object into JSON string
-            const location = {
-                name: data.name,
-                description: data.description,
-                recommendedActivity: data.recommendedActivity,
-                safetyTips: data.safetyTips,
-            };
-            form.append("location", JSON.stringify(location));
+                // Serialize equipment object into JSON string
+                const equipment = {
+                    id: data.id,
+                    name: data.name,
+                    description: data.description,
+                    price: data.price,
+                    stock: data.stock,
+                };
+                form.append("equipment", JSON.stringify(equipment));
 
-            // Append each image separately
-            for (let i = 0; i < data.images.length; i++) {
-                form.append(`images`, data.images[i]);
+                // Append each image separately
+                for (let i = 0; i < data.images.length; i++) {
+                    form.append(`images`, data.images[i]);
+                }
+
+                const response = await equipmentService.update(form);
+                clearForm();
+                navigate("/dashboard/equipment");
+            } catch (err) {
+                console.error("Error submitting form:", err);
             }
+        }else {
+            try {
+                const form = new FormData();
 
-            await locationService.create(form);
-            clearForm();
-            navigate("/dashboard/location");
-        } catch (err) {
-            console.error("Error submitting form:", err);
+                // Serialize equipment object into JSON string
+                const equipment = {
+                    name: data.name,
+                    description: data.description,
+                    price: data.price,
+                    stock: data.stock,
+                };
+                form.append("equipment", JSON.stringify(equipment));
+
+                // Append each image separately
+                for (let i = 0; i < data.images.length; i++) {
+                    form.append(`images`, data.images[i]);
+                }
+
+                await equipmentService.create(form);
+                clearForm();
+                navigate("/dashboard/equipment");
+            } catch (err) {
+                console.error("Error submitting form:", err);
+            }
         }
-        refetch.refetch();
+
+        refetch();
     };
 
     const clearForm = () => {
@@ -84,6 +111,55 @@ function LocationForm(refetch) {
         reset();
     };
 
+    useEffect(() => {
+        console.log(equipmentId)
+
+        if (equipmentId) {
+
+            const getProductById = async () => {
+                try {
+                    const response = await equipmentService.getById(equipmentId);
+                    const currentProduct = response.data;
+                    setValue("id", currentProduct.id);
+                    setValue("name", currentProduct.name);
+                    setValue("description", currentProduct.description);
+                    setValue("price", currentProduct.price);
+                    setValue("stock", currentProduct.stock);
+                    setValue("images", currentProduct.images);
+
+                    // Fetch each image from its URL and create object URLs
+                    const previewImages = await Promise.all(currentProduct.images.map(async (image) => {
+                        const imageUrl = image.url;
+                        const response = await fetch(imageUrl);
+                        const blob = await response.blob();
+                        return URL.createObjectURL(blob);
+                    }));
+
+                    // Set preview images
+                    setPreviewImage(previewImages);
+
+                    trigger();
+                } catch (error) {
+                    console.log(error);
+                    await navigate("/dashboard/equipment");
+                    Swal.fire({
+                        title: "Error",
+                        text: error,
+                        icon: "error",
+                        allowOutsideClick: false
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.reload();
+                        }
+                    })
+
+                }
+            };
+            getProductById();
+        } else {
+            clearForm();
+        }
+    }, [equipmentId, setValue, trigger]);
 
     return (
         <>
@@ -98,7 +174,7 @@ function LocationForm(refetch) {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="staticBackdropLabel">
-                                Location Form
+                                Equipment Form
                             </h1>
 
                         </div>
@@ -107,7 +183,7 @@ function LocationForm(refetch) {
 
                                 {/*    Modal Table */}
 
-                                <label className="mb-2">Location Name</label>
+                                <label className="mb-2">Product Name</label>
                                 <input
                                     {...register("name")}
                                     type="text"
@@ -119,25 +195,28 @@ function LocationForm(refetch) {
                                 <textarea
                                     {...register("description")}
                                     name="description"
-                                    className="form-control mb-3" id="description" rows="3" style={{resize: "none"}}/>
-
-                                <label htmlFor="recommendedActivity" className="form-label">Recommended Activity</label>
-                                <textarea
-                                    {...register("recommendedActivity")}
-                                    name="recommendedActivity"
-                                    className="form-control mb-3" id="recommendedActivity" rows="3"
+                                    className="form-control mb-3" id="description" rows="3"
                                     style={{resize: "none"}}/>
 
-                                <label htmlFor="safetyTips" className="form-label">Safety Tips</label>
-                                <textarea
-                                    {...register("safetyTips")}
-                                    name="safetyTips"
-                                    className="form-control mb-3" id="safetyTips" rows="3"
-                                    style={{resize: "none"}}/>
+                                <label className="mb-2">Price</label>
+                                <input
+                                    {...register("price")}
+                                    type="text"
+                                    name="price"
+                                    id="price"
+                                    className="form-control form-control mb-3 rounded-1"/>
+
+                                <label className="mb-2">Stock</label>
+                                <input
+                                    {...register("stock")}
+                                    type="text"
+                                    name="stock"
+                                    id="stock"
+                                    className="form-control form-control mb-3 rounded-1"/>
 
                                 <div className="mb-3">
                                     <label htmlFor="image" className="form-label">
-                                        <span>Gambar</span>
+                                        <span>Images</span>
                                         <br/>
                                         <div className="preview-container">
                                             {previewImage.map((previewImage, index) => (
@@ -193,4 +272,4 @@ function LocationForm(refetch) {
     );
 }
 
-export default LocationForm;
+export default EquipmentForm;
