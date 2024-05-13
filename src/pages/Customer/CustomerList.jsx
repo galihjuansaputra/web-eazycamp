@@ -13,6 +13,8 @@ function CustomerList() {
     const customerService = useMemo(() => CustomerService(), []);
     const {handleSubmit, register} = useForm();
 
+    const [carts, setCarts] = useState()
+
     const navigate = useNavigate();
 
     const search = searchParam.get("name") || "";
@@ -29,6 +31,11 @@ function CustomerList() {
         hasPrevious: false,
         hasNext: false,
     });
+
+    const handleCarts = async (id) => {
+        const response = await customerService.getById(id);
+        setCarts(response.data.carts);
+    }
 
     const onSubmitSearch = ({search}) => {
         setSearchParam({name: search || "", direction: direction, page: "1", size: size, sortBy: sortBy});
@@ -159,6 +166,7 @@ function CustomerList() {
                                 <td>{customer.phone}</td>
                                 <td>
                                     <button
+                                        onClick={()=> {handleCarts(customer.id)}}
                                         type="button"
                                         className="btn btn-sm btn-info text-white"
                                         data-bs-toggle="modal"
@@ -242,7 +250,7 @@ function CustomerList() {
                 </nav>
             </div>
             <CustomerForm refetch={refetch}/>
-            <CustomerCart/>
+            <CustomerCart refetch={refetch} carts={carts}/>
         </>
     );
 }
