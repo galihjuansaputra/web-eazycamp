@@ -12,6 +12,8 @@ import Customer from "@pages/Customer/Customer.jsx";
 import Location from "@pages/Location/Location.jsx";
 import LocationForm from "@pages/Location/LocationForm.jsx";
 import Equipment from "@pages/Equipment/Equipment.jsx";
+import Guide from "@pages/Guide/Guide.jsx";
+import GuideForm from "@pages/Guide/GuideForm.jsx";
 
 const router = createBrowserRouter([
     {
@@ -41,6 +43,16 @@ const router = createBrowserRouter([
             {
                 path: "location",
                 element: <Location/>,
+            },
+            {
+                path: "guide",
+                element: <Guide/>,
+                children: [
+                    {
+                        path: ":id",
+                        element: <GuideForm />,
+                    },
+                ],
             },
             {
                 path: "customer",

@@ -3,36 +3,41 @@ import {useNavigate, useParams} from "react-router-dom";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {useEffect, useState} from "react";
+import GuideService from "@services/GuideService.js";
+import AuthService from "@services/AuthService.js";
 import * as bootstrap from 'bootstrap';
 import Swal from "sweetalert2";
-import EquipmentService from "@services/EquipmentService.js";
+import LocationService from "@services/LocationService.js";
 
 const createSchema = z.object({
     id: z.string().optional(),
-    name: z.string().min(1, "Name must be filled!"),
-    description: z.string().min(1, "Description must be filled!"),
-    price: z.string().min(1, "Recommended activity must be filled!"),
-    stock: z.string().min(1, "Safety tips must be filled!"),
+    name: z.string().min(1, "name wajib di isi!"),
+    username: z.string().min(1, "username wajib di isi!"),
+    password: z.string().min(8, "password harus lebih dari 8 karakter!"),
+    phone: z.string().min(1, "phone number wajib di isi!"),
+    price: z.string().min(1, "price wajib di isi!"),
+    location: z.string().min(1, "location wajib di isi!"),
     images: z.any()
 });
 
-const equipmentService = EquipmentService();
+const updateSchema = z.object({
+    id: z.string().optional(),
+    name: z.string().min(1, "name wajib di isi!"),
+    username: z.string().min(1, "username wajib di isi!"),
+    phone: z.string().min(1, "phone number wajib di isi!"),
+    price: z.string().min(1, "price wajib di isi!"),
+    location: z.string().min(1, "location wajib di isi!"),
+    images: z.any()
+});
 
-function EquipmentForm({refetch, equipmentId}) {
+const guideService = GuideService();
+const authService = AuthService();
+const locationService = LocationService();
 
-    const {
-        register,
-        handleSubmit,
-        formState: {errors, isValid},
-        clearErrors,
-        reset,
-        setValue,
-        trigger,
-    } = useForm({
-        mode: "onChange",
-        resolver: zodResolver(createSchema),
-    });
-    const navigate = useNavigate();
+function GuideForm({refetch}) {
+    const [locations, setLocations] = useState([]);
+
+    const {id} = useParams();
 
     const [previewImage, setPreviewImage] = useState(
         ["https://lh5.googleusercontent.com/proxy/t08n2HuxPfw8OpbutGWjekHAgxfPFv-pZZ5_-uTfhEGK8B5Lp-VN4VjrdxKtr8acgJA93S14m9NdELzjafFfy13b68pQ7zzDiAmn4Xg8LvsTw1jogn_7wStYeOx7ojx5h63Gliw"]
@@ -45,64 +50,70 @@ function EquipmentForm({refetch, equipmentId}) {
         setPreviewImage(prevImages => [...prevImages, ...urlImages]);
     };
 
+    const {
+        register,
+        handleSubmit,
+        formState: {errors, isValid},
+        clearErrors,
+        reset,
+        setValue,
+        trigger,
+    } = useForm({
+        mode: "onChange",
+        resolver: zodResolver(id ? updateSchema : createSchema),
+    });
+    const navigate = useNavigate();
+
     const handleBack = () => {
         clearForm();
-        setPreviewImage(["https://lh5.googleusercontent.com/proxy/t08n2HuxPfw8OpbutGWjekHAgxfPFv-pZZ5_-uTfhEGK8B5Lp-VN4VjrdxKtr8acgJA93S14m9NdELzjafFfy13b68pQ7zzDiAmn4Xg8LvsTw1jogn_7wStYeOx7ojx5h63Gliw"])
-        navigate("/dashboard/equipment");
+        navigate("/dashboard/guide");
     };
 
     const onSubmit = async (data) => {
-        if (data.id){
+        if (data.id) {
             try {
-                const form = new FormData();
-
-                // Serialize equipment object into JSON string
-                const equipment = {
+                const guide = {
                     id: data.id,
                     name: data.name,
-                    description: data.description,
+                    username: data.username,
+                    phone: data.phone,
                     price: data.price,
-                    stock: data.stock,
                 };
-                form.append("equipment", JSON.stringify(equipment));
 
-                // Append each image separately
-                for (let i = 0; i < data.images.length; i++) {
-                    form.append(`images`, data.images[i]);
-                }
+                console.log(guide)
 
-                const response = await equipmentService.update(form);
+                await guideService.update(guide);
                 clearForm();
-                navigate("/dashboard/equipment");
+                navigate("/dashboard/guide");
             } catch (err) {
-                console.error("Error submitting form:", err);
+                console.log(err);
             }
-        }else {
+        } else {
             try {
                 const form = new FormData();
 
-                // Serialize equipment object into JSON string
-                const equipment = {
+                const guide = {
                     name: data.name,
-                    description: data.description,
+                    username: data.username,
+                    password: data.password,
                     price: data.price,
-                    stock: data.stock,
+                    phone: data.phone,
+                    location: data.location,
                 };
-                form.append("equipment", JSON.stringify(equipment));
+                form.append("guide", JSON.stringify(guide));
 
                 // Append each image separately
                 for (let i = 0; i < data.images.length; i++) {
                     form.append(`images`, data.images[i]);
                 }
 
-                await equipmentService.create(form);
+                const response = await authService.registerGuide(form);
                 clearForm();
-                navigate("/dashboard/equipment");
+                navigate("/dashboard/guide");
             } catch (err) {
-                console.error("Error submitting form:", err);
+                console.log(err);
             }
         }
-
         refetch();
     };
 
@@ -113,19 +124,31 @@ function EquipmentForm({refetch, equipmentId}) {
     };
 
     useEffect(() => {
-        console.log(equipmentId)
+        const fetchLocations = async () => {
+            try {
+                const response = await locationService.getAll();
+                setLocations(response.data);
+            } catch (error) {
+                console.error("Error fetching locations:", error);
+            }
+        };
 
-        if (equipmentId) {
+        if (id) {
+            window.onload = () => {
+                const myModal = new bootstrap.Modal('#staticBackdrop');
+                myModal.show();
+            }
 
             const getProductById = async () => {
                 try {
-                    const response = await equipmentService.getById(equipmentId);
+                    const response = await guideService.getById(id);
                     const currentProduct = response.data;
                     setValue("id", currentProduct.id);
                     setValue("name", currentProduct.name);
-                    setValue("description", currentProduct.description);
+                    setValue("username", currentProduct.userAccount.username);
+                    setValue("phone", currentProduct.phone);
                     setValue("price", currentProduct.price);
-                    setValue("stock", currentProduct.stock);
+                    setValue("location", currentProduct.location.id);
                     setValue("images", currentProduct.images);
 
                     // Fetch each image from its URL and create object URLs
@@ -138,11 +161,10 @@ function EquipmentForm({refetch, equipmentId}) {
 
                     // Set preview images
                     setPreviewImage(previewImages);
-
                     trigger();
                 } catch (error) {
                     console.log(error);
-                    await navigate("/dashboard/equipment");
+                    await navigate("/dashboard/guide");
                     Swal.fire({
                         title: "Error",
                         text: error,
@@ -160,7 +182,9 @@ function EquipmentForm({refetch, equipmentId}) {
         } else {
             clearForm();
         }
-    }, [equipmentId, setValue, trigger]);
+        fetchLocations();
+    }, [id, setValue, trigger]);
+
 
     return (
         <>
@@ -175,7 +199,7 @@ function EquipmentForm({refetch, equipmentId}) {
                     <div className="modal-content">
                         <div className="modal-header">
                             <h1 className="modal-title fs-5" id="staticBackdropLabel">
-                                Equipment Form
+                                Guide Form
                             </h1>
 
                         </div>
@@ -184,7 +208,7 @@ function EquipmentForm({refetch, equipmentId}) {
 
                                 {/*    Modal Table */}
 
-                                <label className="mb-2">Product Name</label>
+                                <label className="mb-2">Name</label>
                                 <input
                                     {...register("name")}
                                     type="text"
@@ -192,27 +216,48 @@ function EquipmentForm({refetch, equipmentId}) {
                                     id="name"
                                     className="form-control form-control mb-3 rounded-1"/>
 
-                                <label htmlFor="description" className="form-label">Description</label>
-                                <textarea
-                                    {...register("description")}
-                                    name="description"
-                                    className="form-control mb-3" id="description" rows="3"
-                                    style={{resize: "none"}}/>
+                                <label className="mb-2">Phone Number</label>
+                                <input
+                                    {...register("phone")}
+                                    type="text"
+                                    name="phone"
+                                    id="phone"
+                                    className="form-control form-control mb-3 rounded-1"/>
 
-                                <label className="mb-2">Price</label>
+                                <label className="mb-2">Username</label>
+                                <input
+                                    {...register("username")}
+                                    type="text"
+                                    name="username"
+                                    id="username"
+                                    className="form-control form-control mb-3 rounded-1"/>
+
+                                {!id
+                                    ? (<><label className="mb-2">Password</label>
+                                        <input
+                                            {...register("password")}
+                                            type="password"
+                                            name="password"
+                                            id="password"
+                                            className="form-control form-control mb-3 rounded-1"/></>)
+                                    : (<></>
+                                    )}
+
+                                <label className="mb-2">Location</label>
+                                <select {...register("location")} defaultValue={""} className="form-select mb-3"
+                                        aria-label="Default select example">
+                                    <option value="" disabled>Select Location</option>
+                                    {locations.map(location => (
+                                        <option key={location.id} value={location.id}>{location.name}</option>
+                                    ))}
+                                </select>
+
+                                <label className="mb-2">Rate</label>
                                 <input
                                     {...register("price")}
                                     type="text"
                                     name="price"
                                     id="price"
-                                    className="form-control form-control mb-3 rounded-1"/>
-
-                                <label className="mb-2">Stock</label>
-                                <input
-                                    {...register("stock")}
-                                    type="text"
-                                    name="stock"
-                                    id="stock"
                                     className="form-control form-control mb-3 rounded-1"/>
 
                                 <div className="mb-3">
@@ -248,6 +293,7 @@ function EquipmentForm({refetch, equipmentId}) {
                                     )}
                                 </div>
 
+
                             </div>
                             <div className="modal-footer">
                                 <button disabled={!isValid} type="submit" className="btn btn-success text-white"
@@ -273,4 +319,4 @@ function EquipmentForm({refetch, equipmentId}) {
     );
 }
 
-export default EquipmentForm;
+export default GuideForm;

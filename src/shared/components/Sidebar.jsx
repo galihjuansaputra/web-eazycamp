@@ -5,7 +5,7 @@ import {
     IconMountain, IconPick,
     IconReceipt,
     IconUserCog,
-    IconUsers
+    IconUsers, IconUserShield
 } from "@tabler/icons-react";
 import {Link, useNavigate} from "react-router-dom";
 import Swal from "sweetalert2";
@@ -53,6 +53,11 @@ function Sidebar() {
                     <Link to="/dashboard/location" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
                             <IconMountain style={{marginRight: 10}}/>
                             Location
+                    </Link>
+
+                    <Link to="/dashboard/guide" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
+                        <IconUserShield style={{marginRight: 10}}/>
+                        Guide
                     </Link>
 
                     <Link to="/dashboard/customer" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
