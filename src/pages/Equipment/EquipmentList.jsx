@@ -75,6 +75,20 @@ function EquipmentList() {
         return number.toLocaleString();
     }
 
+    const handleDelete = async (id) => {
+        if (!confirm("apakah yakin customer ini ingin dihapus?")) return;
+        try {
+            const response = await equipmentService.deleteById(id);
+            if (response.statusCode === 200) {
+                const data = await equipmentService.getAll();
+                setPaging(data.paging);
+                await refetch()
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
 
     if (isLoading) {
         return <Loading/>;
@@ -156,7 +170,7 @@ function EquipmentList() {
                                         <div style={{width: 72, height: 72}}>
                                             <img
                                                 src={equipment.images[0].url}
-                                                style={{objectFit: "contain"}}
+                                                style={{objectFit: "cover"}}
                                                 className="img-thumbnail img-fluid w-100 h-100"
                                             />
                                         </div>
@@ -170,6 +184,7 @@ function EquipmentList() {
                                         <div>
                                             <button
                                                 onClick={() => {
+                                                    navigate(`${equipment.id}`)
                                                     selectId(equipment.id)
                                                 }}
                                                 type="button"
@@ -179,7 +194,9 @@ function EquipmentList() {
                                             >
                                                 <IconEdit style={{width: 18}}/>
                                             </button>
-                                            <button className="btn btn-danger btn-sm text-white">
+                                            <button
+                                                onClick={() => handleDelete(equipment.id)}
+                                                className="btn btn-danger btn-sm text-white">
                                                 <IconTrash style={{width: 18}}/>
                                             </button>
                                         </div>

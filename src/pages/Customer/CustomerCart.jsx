@@ -1,5 +1,4 @@
 function CustomerCart({refetch, carts}) {
-    console.log(carts)
     return (
         <>
             <div

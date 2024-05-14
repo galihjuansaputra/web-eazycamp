@@ -14,6 +14,7 @@ import LocationForm from "@pages/Location/LocationForm.jsx";
 import Equipment from "@pages/Equipment/Equipment.jsx";
 import Guide from "@pages/Guide/Guide.jsx";
 import GuideForm from "@pages/Guide/GuideForm.jsx";
+import EquipmentForm from "@pages/Equipment/EquipmentForm.jsx";
 
 const router = createBrowserRouter([
     {
@@ -39,6 +40,12 @@ const router = createBrowserRouter([
             {
                 path: "equipment",
                 element: <Equipment/>,
+                children: [
+                    {
+                        path: ":equipmentId",
+                        element: <EquipmentForm/>,
+                    },
+                ],
             },
             {
                 path: "location",

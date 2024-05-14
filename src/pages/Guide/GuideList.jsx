@@ -198,7 +198,7 @@ function GuideList() {
                                     <div style={{width: 72, height: 72}}>
                                         <img
                                             src={guide.images[0].url}
-                                            style={{objectFit: "contain"}}
+                                            style={{objectFit: "cover"}}
                                             className="img-thumbnail img-fluid w-100 h-100"
                                         />
                                     </div>

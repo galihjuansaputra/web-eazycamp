@@ -18,7 +18,9 @@ const createSchema = z.object({
 
 const equipmentService = EquipmentService();
 
-function EquipmentForm({refetch, equipmentId}) {
+function EquipmentForm({refetch}) {
+
+    const {equipmentId} = useParams();
 
     const {
         register,
@@ -113,8 +115,6 @@ function EquipmentForm({refetch, equipmentId}) {
     };
 
     useEffect(() => {
-        console.log(equipmentId)
-
         if (equipmentId) {
 
             const getProductById = async () => {
