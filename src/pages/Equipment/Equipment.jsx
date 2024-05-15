@@ -1,4 +1,3 @@
-import LocationList from "@pages/Location/LocationList.jsx";
 import EquipmentList from "@pages/Equipment/EquipmentList.jsx";
 
 function Equipment() {

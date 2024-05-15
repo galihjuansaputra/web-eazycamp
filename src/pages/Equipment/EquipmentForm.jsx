@@ -3,7 +3,6 @@ import {useNavigate, useParams} from "react-router-dom";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {useEffect, useState} from "react";
-import * as bootstrap from 'bootstrap';
 import Swal from "sweetalert2";
 import EquipmentService from "@services/EquipmentService.js";
 
@@ -73,7 +72,7 @@ function EquipmentForm({refetch}) {
                     form.append(`images`, data.images[i]);
                 }
 
-                const response = await equipmentService.update(form);
+                await equipmentService.update(form);
                 clearForm();
                 navigate("/dashboard/equipment");
             } catch (err) {
@@ -184,9 +183,10 @@ function EquipmentForm({refetch}) {
 
                                 {/*    Modal Table */}
 
-                                <label className="mb-2">Product Name</label>
+                                <label htmlFor="name" className="mb-2">Product Name</label>
                                 <input
                                     {...register("name")}
+                                    autoComplete="off"
                                     type="text"
                                     name="name"
                                     id="name"
@@ -199,7 +199,7 @@ function EquipmentForm({refetch}) {
                                     className="form-control mb-3" id="description" rows="3"
                                     style={{resize: "none"}}/>
 
-                                <label className="mb-2">Price</label>
+                                <label htmlFor="price" className="mb-2">Price</label>
                                 <input
                                     {...register("price")}
                                     type="text"
@@ -207,7 +207,7 @@ function EquipmentForm({refetch}) {
                                     id="price"
                                     className="form-control form-control mb-3 rounded-1"/>
 
-                                <label className="mb-2">Stock</label>
+                                <label htmlFor="stock" className="mb-2">Stock</label>
                                 <input
                                     {...register("stock")}
                                     type="text"
@@ -216,7 +216,7 @@ function EquipmentForm({refetch}) {
                                     className="form-control form-control mb-3 rounded-1"/>
 
                                 <div className="mb-3">
-                                    <label htmlFor="image" className="form-label">
+                                    <label htmlFor="images" className="form-label">
                                         <span>Images</span>
                                         <br/>
                                         <div className="preview-container">

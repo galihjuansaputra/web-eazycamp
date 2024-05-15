@@ -177,18 +177,6 @@ function CustomerList() {
                                 </td>
                                 <td>
                                     <button
-                                        onClick={() => {
-                                            navigate(`/dashboard/customer/${customer.id}`, {replace: false})
-                                        }}
-                                        type="button"
-                                        className="btn btn-sm btn-secondary me-1 text-white"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop"
-                                    >
-                                        <IconEdit style={{width: 18}}/>
-                                    </button>
-
-                                    <button
                                         onClick={() => handleDelete(customer.id)}
                                         className="btn btn-sm btn-danger text-white"
                                     >

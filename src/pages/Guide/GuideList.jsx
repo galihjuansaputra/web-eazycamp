@@ -1,9 +1,9 @@
 import GuideForm from "@pages/Guide/GuideForm.jsx";
 import {useEffect, useMemo, useState} from "react";
-import {useNavigate, useSearchParams} from "react-router-dom";
+import {useSearchParams} from "react-router-dom";
 import GuideService from "@services/GuideService.js";
 import {useForm} from "react-hook-form";
-import {IconEdit, IconTrash} from "@tabler/icons-react";
+import {IconId, IconTrash} from "@tabler/icons-react";
 import {useQuery} from "react-query";
 import Loading from "@shared/components/Loading.jsx";
 import LocationService from "@services/LocationService.js";
@@ -14,8 +14,12 @@ function GuideList() {
     const [searchParam, setSearchParam] = useSearchParams();
     const guideService = useMemo(() => GuideService(), []);
     const {handleSubmit, register} = useForm();
-
     const [locations, setLocations] = useState([]);
+    const [selectedGuide, setSelectedGuide] = useState(null);
+
+    const handleOpenModal = (guide) => {
+        setSelectedGuide(guide);
+    };
 
     useEffect(() => {
         const fetchLocations = async () => {
@@ -29,10 +33,6 @@ function GuideList() {
 
         fetchLocations();
     }, []);
-
-    const [carts, setCarts] = useState()
-
-    const navigate = useNavigate();
 
     const search = searchParam.get("name") || "";
     const direction = searchParam.get("direction") || "asc";
@@ -48,11 +48,6 @@ function GuideList() {
         hasPrevious: false,
         hasNext: false,
     });
-
-    const handleCarts = async (id) => {
-        const response = await guideService.getById(id);
-        setCarts(response.data.carts);
-    }
 
     const onSubmitSearch = ({search}) => {
         setSearchParam({name: search || "", direction: direction, page: "1", size: size, sortBy: sortBy});
@@ -118,14 +113,6 @@ function GuideList() {
                 <form className="flex-fill" onSubmit={handleSubmit(onSubmitSearch)} autoComplete="off">
                     <div className="input-group w-auto">
 
-                        {/*<input
-                            {...register("search")}
-                            type="search"
-                            name="search"
-                            id="search"
-                            className="form-control w-25" placeholder="Search by name"
-                            aria-label="Recipient's username" aria-describedby="button-addon2"/>*/}
-
                         <select {...register("search")} defaultValue={""} className="form-select w-25"
                                 aria-label="Default select example"
                                 name="search"
@@ -189,50 +176,90 @@ function GuideList() {
                     </tr>
                     </thead>
                     <tbody>
+                    {data && data.data.map((guide, index) => (
+                        <tr key={guide.id}>
+                            <th scope="row">{index + 1}</th>
+                            <td>
+                                <div style={{width: 72, height: 72}}>
+                                    <img
+                                        src={guide.images[0].url}
+                                        style={{objectFit: "cover"}}
+                                        className="img-thumbnail img-fluid w-100 h-100"
+                                        alt={`Guide ${index + 1}`}
+                                    />
+                                </div>
+                            </td>
+                            <td>{guide.name}</td>
+                            <td>{guide.userAccount && guide.userAccount.username}</td>
+                            <td>{guide.phone}</td>
+                            <td>{guide.location.name}</td>
+                            <td>Rp. {separateThousands(guide.price)}</td>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-info me-1 text-white"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#detailModal"
+                                    onClick={() => handleOpenModal(guide)}
+                                >
+                                    <IconId style={{width: 18}}/>
+                                </button>
 
-                    {data &&
-                        data.data.map((guide, index) => (
-                            <tr key={guide.id}>
-                                <th scope="row">{++index}</th>
-                                <td>
-                                    <div style={{width: 72, height: 72}}>
-                                        <img
-                                            src={guide.images[0].url}
-                                            style={{objectFit: "cover"}}
-                                            className="img-thumbnail img-fluid w-100 h-100"
-                                        />
-                                    </div>
-                                </td>
-                                <td>{guide.name}</td>
-                                <td>{guide.userAccount && guide.userAccount.username}</td>
-                                <td>{guide.phone}</td>
-                                <td>{guide.location.name}</td>
-                                <td>Rp. {separateThousands(guide.price)}</td>
-                                <td>
-                                    <button
-                                        onClick={() => {
-                                            navigate(`/dashboard/guide/${guide.id}`, {replace: false})
-                                        }}
-                                        type="button"
-                                        className="btn btn-sm btn-secondary me-1 text-white"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop"
-                                    >
-                                        <IconEdit style={{width: 18}}/>
-                                    </button>
-
-                                    <button
-                                        onClick={() => handleDelete(guide.id)}
-                                        className="btn btn-sm btn-danger text-white"
-                                    >
-                                        <IconTrash style={{width: 18}}/>
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-
+                                <button
+                                    onClick={() => handleDelete(guide.id)}
+                                    className="btn btn-sm btn-danger text-white"
+                                >
+                                    <IconTrash style={{width: 18}}/>
+                                </button>
+                            </td>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
+
+                <div className="modal fade" id="detailModal" tabIndex="-1" aria-labelledby="exampleModalLabel"
+                     aria-hidden="true">
+                    <div className="modal-dialog">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h1 className="modal-title fs-5" id="exampleModalLabel">ID Info</h1>
+                                <button type="button" className="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div className="modal-body">
+                                {selectedGuide ? (
+                                    <>
+                                        <h2>{selectedGuide.name}</h2>
+                                        <p>
+                                            <strong>Username:</strong> {selectedGuide.userAccount && selectedGuide.userAccount.username}
+                                        </p>
+                                        <p><strong>Phone:</strong> {selectedGuide.phone}</p>
+                                        <p><strong>Location:</strong> {selectedGuide.location.name}</p>
+                                        <p><strong>Price:</strong> Rp. {separateThousands(selectedGuide.price)}</p>
+                                        <div>
+                                            {selectedGuide.images && selectedGuide.images.length > 0 ? (
+                                                selectedGuide.images.map((image, index) => (
+                                                    <img key={index} src={image.url} alt={`Image ${index}`}
+                                                         className="img-fluid mb-2"/>
+                                                ))
+                                            ) : (
+                                                <p>No images available</p>
+                                            )}
+                                        </div>
+                                    </>
+                                ) : (
+                                    <p>Loading...</p>
+                                )}
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-danger text-white"
+                                        data-bs-dismiss="modal">Close
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
             <div className="d-flex flex-column-reverse flex-sm-row justify-content-between align-items-center">

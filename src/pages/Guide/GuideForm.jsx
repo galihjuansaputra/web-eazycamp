@@ -208,43 +208,43 @@ function GuideForm({refetch}) {
 
                                 {/*    Modal Table */}
 
-                                <label className="mb-2">Name</label>
+                                <label htmlFor="name" className="mb-2">Name</label>
                                 <input
                                     {...register("name")}
+                                    autoComplete="off"
                                     type="text"
                                     name="name"
                                     id="name"
                                     className="form-control form-control mb-3 rounded-1"/>
 
-                                <label className="mb-2">Phone Number</label>
+                                <label htmlFor="phone" className="mb-2">Phone Number</label>
                                 <input
                                     {...register("phone")}
+                                    autoComplete="off"
                                     type="text"
                                     name="phone"
                                     id="phone"
                                     className="form-control form-control mb-3 rounded-1"/>
 
-                                <label className="mb-2">Username</label>
+                                <label htmlFor="username" className="mb-2">Username</label>
                                 <input
                                     {...register("username")}
+                                    autoComplete="off"
                                     type="text"
                                     name="username"
                                     id="username"
                                     className="form-control form-control mb-3 rounded-1"/>
 
-                                {!id
-                                    ? (<><label className="mb-2">Password</label>
-                                        <input
-                                            {...register("password")}
-                                            type="password"
-                                            name="password"
-                                            id="password"
-                                            className="form-control form-control mb-3 rounded-1"/></>)
-                                    : (<></>
-                                    )}
+                                <label htmlFor="password" className="mb-2">Password</label>
+                                <input
+                                    {...register("password")}
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    className="form-control form-control mb-3 rounded-1"/>
 
-                                <label className="mb-2">Location</label>
-                                <select {...register("location")} defaultValue={""} className="form-select mb-3"
+                                <label htmlFor="location" className="mb-2">Location</label>
+                                <select {...register("location")} defaultValue={""} id="location" className="form-select mb-3"
                                         aria-label="Default select example">
                                     <option value="" disabled>Select Location</option>
                                     {locations.map(location => (
@@ -252,7 +252,7 @@ function GuideForm({refetch}) {
                                     ))}
                                 </select>
 
-                                <label className="mb-2">Rate</label>
+                                <label htmlFor="price" className="mb-2">Rate</label>
                                 <input
                                     {...register("price")}
                                     type="text"
@@ -261,7 +261,7 @@ function GuideForm({refetch}) {
                                     className="form-control form-control mb-3 rounded-1"/>
 
                                 <div className="mb-3">
-                                    <label htmlFor="image" className="form-label">
+                                    <label htmlFor="images" className="form-label">
                                         <span>Images</span>
                                         <br/>
                                         <div className="preview-container">

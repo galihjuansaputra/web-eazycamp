@@ -1,10 +1,8 @@
 import {useForm} from "react-hook-form";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
-import {useEffect, useState} from "react";
-import * as bootstrap from 'bootstrap';
-import Swal from "sweetalert2";
+import {useState} from "react";
 import LocationService from "@services/LocationService.js";
 
 const createSchema = z.object({
@@ -107,12 +105,13 @@ function LocationForm(refetch) {
 
                                 {/*    Modal Table */}
 
-                                <label className="mb-2">Location Name</label>
+                                <label htmlFor="name" className="mb-2">Location Name</label>
                                 <input
                                     {...register("name")}
                                     type="text"
                                     name="name"
                                     id="name"
+                                    autoComplete="off"
                                     className="form-control form-control mb-3 rounded-1"/>
 
                                 <label htmlFor="description" className="form-label">Description</label>
@@ -136,7 +135,7 @@ function LocationForm(refetch) {
                                     style={{resize: "none"}}/>
 
                                 <div className="mb-3">
-                                    <label htmlFor="image" className="form-label">
+                                    <label htmlFor="images" className="form-label">
                                         <span>Gambar</span>
                                         <br/>
                                         <div className="preview-container">

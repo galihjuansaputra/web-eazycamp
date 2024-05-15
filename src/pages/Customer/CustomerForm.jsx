@@ -151,42 +151,43 @@ function CustomerForm(refetch) {
 
                                 {/*    Modal Table */}
 
-                                <label className="mb-2">Name</label>
+                                <label htmlFor="name" className="mb-2">Name</label>
                                 <input
                                     {...register("name")}
                                     type="text"
                                     name="name"
                                     id="name"
+                                    autoComplete="off"
                                     className="form-control form-control mb-3 rounded-1"/>
 
-                                <label className="mb-2">Phone Number</label>
+                                <label htmlFor="phone" className="mb-2">Phone Number</label>
                                 <input
                                     {...register("phone")}
                                     type="text"
                                     name="phone"
                                     id="phone"
+                                    autoComplete="off"
                                     className="form-control form-control mb-3 rounded-1"/>
 
-                                <label className="mb-2">Username</label>
+                                <label htmlFor="name" className="mb-2">Username</label>
                                 <input
                                     {...register("username")}
                                     type="text"
                                     name="username"
                                     id="username"
+                                    autoComplete="off"
                                     className="form-control form-control mb-3 rounded-1"/>
 
-                                {!id
-                                    ? (<><label className="mb-2">Password</label>
-                                        <input
-                                            {...register("password")}
-                                            type="password"
-                                            name="password"
-                                            id="password"
-                                            className="form-control form-control mb-3 rounded-1"/></>)
-                                    : (<></>
-                                    )}
+                                <label htmlFor="name" className="mb-2">Password</label>
+                                <input
+                                    {...register("password")}
+                                    type="password"
+                                    name="password"
+                                    id="password"
+                                    className="form-control form-control mb-3 rounded-1"/>
 
                             </div>
+
                             <div className="modal-footer">
                                 <button disabled={!isValid} type="submit" className="btn btn-success text-white"
                                         data-bs-dismiss="modal">
