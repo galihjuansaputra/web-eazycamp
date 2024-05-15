@@ -30,8 +30,6 @@ function GuideList() {
         fetchLocations();
     }, []);
 
-    const [carts, setCarts] = useState()
-
     const navigate = useNavigate();
 
     const search = searchParam.get("name") || "";
@@ -48,11 +46,6 @@ function GuideList() {
         hasPrevious: false,
         hasNext: false,
     });
-
-    const handleCarts = async (id) => {
-        const response = await guideService.getById(id);
-        setCarts(response.data.carts);
-    }
 
     const onSubmitSearch = ({search}) => {
         setSearchParam({name: search || "", direction: direction, page: "1", size: size, sortBy: sortBy});

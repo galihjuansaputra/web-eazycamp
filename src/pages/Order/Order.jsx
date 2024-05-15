@@ -1,4 +1,5 @@
-import OrderList from "@pages/Order/OrderList.jsx";
+
+import { Outlet } from "react-router-dom";
 
 function Order() {
     return (
@@ -6,7 +7,7 @@ function Order() {
             <h1 className="my-4">Transaction</h1>
             <hr/>
 
-            <OrderList/>
+            <Outlet/>
         </>
     );
 }
