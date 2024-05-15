@@ -4,7 +4,7 @@ import Home from "@pages/Home/Home.jsx";
 import Login from "@pages/Authentication/Login/Login.jsx";
 import Dashboard from "@pages/Dashboard/Dashboard.jsx";
 import Products from "@pages/Products/Products.jsx";
-import Transaction from "@pages/Transaction/Transaction.jsx";
+import Order from "@pages/Order/Order.jsx";
 import Admin from "@pages/Admin/Admin.jsx";
 import ProtectedRoute from "@/routes/protectedRoute.jsx";
 import CustomerForm from "@pages/Customer/CustomerForm.jsx";
@@ -72,8 +72,8 @@ const router = createBrowserRouter([
                 ],
             },
             {
-                path: "transaction",
-                element: <Transaction/>,
+                path: "order",
+                element: <Order/>,
             },
             {
                 path: "admin",

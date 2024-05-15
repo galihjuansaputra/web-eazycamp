@@ -65,9 +65,9 @@ function Sidebar() {
                             Customer
                     </Link>
 
-                    <Link to="/dashboard/transaction" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
+                    <Link to="/dashboard/order" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
                             <IconReceipt style={{marginRight: 10}}/>
-                            Transaction
+                            Order
                     </Link>
 
                     <Link to="/dashboard/admin" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
