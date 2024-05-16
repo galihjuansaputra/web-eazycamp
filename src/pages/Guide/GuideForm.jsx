@@ -8,6 +8,7 @@ import AuthService from "@services/AuthService.js";
 import * as bootstrap from 'bootstrap';
 import Swal from "sweetalert2";
 import LocationService from "@services/LocationService.js";
+import PropTypes from 'prop-types'
 
 const createSchema = z.object({
     id: z.string().optional(),
@@ -79,9 +80,6 @@ function GuideForm({refetch}) {
                     phone: data.phone,
                     price: data.price,
                 };
-
-                console.log(guide)
-
                 await guideService.update(guide);
                 clearForm();
                 navigate("/dashboard/guide");
@@ -107,7 +105,7 @@ function GuideForm({refetch}) {
                     form.append(`images`, data.images[i]);
                 }
 
-                const response = await authService.registerGuide(form);
+                await authService.registerGuide(form);
                 clearForm();
                 navigate("/dashboard/guide");
             } catch (err) {
@@ -320,3 +318,7 @@ function GuideForm({refetch}) {
 }
 
 export default GuideForm;
+
+GuideForm.propTypes = {
+    refetch: PropTypes.func
+}

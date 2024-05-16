@@ -73,7 +73,6 @@ function CustomerForm(refetch) {
                     password: data.password,
                     phone: data.phone,
                 };
-                console.log(customer)
                 const response = await authService.registerCustomer(customer);
                 console.log(response)
                 clearForm();

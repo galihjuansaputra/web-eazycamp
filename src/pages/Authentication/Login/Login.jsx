@@ -29,7 +29,6 @@ function Login() {
     });
 
     const onSubmit = async (data) => {
-        console.log(data)
         try {
             const response = await authService.login(data);
             if (response && response.statusCode === 200) {
