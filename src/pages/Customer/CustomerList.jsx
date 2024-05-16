@@ -160,7 +160,7 @@ function CustomerList() {
                     {data &&
                         data.data.map((customer, index) => (
                             <tr key={customer.id}>
-                                <th scope="row">{++index}</th>
+                                <th scope="row">{index + 1 + size * (page - 1)}</th>
                                 <td>{customer.name}</td>
                                 <td>{customer.userAccount && customer.userAccount.username}</td>
                                 <td>{customer.phone}</td>

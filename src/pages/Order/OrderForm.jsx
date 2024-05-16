@@ -522,7 +522,7 @@ export default function OrderForm() {
               </div>
               <div className="mb-3">
                 <label htmlFor="address" className="form-label">
-                  Alamat Pengiriman (Tipe Order Sent)
+                  Alamat Pengiriman (Untuk Tipe Order Sent)
                 </label>
                 <input
                   {...register("address")}

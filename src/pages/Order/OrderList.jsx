@@ -18,7 +18,7 @@ function OrderList() {
   // const [orderId, setOrderId] = useState();
 
   const search = searchParam.get("orderId") || "";
-  const direction = searchParam.get("direction") || "asc";
+  const direction = searchParam.get("direction") || "desc";
   const sortBy = searchParam.get("sortBy") || "date";
   const page = searchParam.get("page") || "1";
   const size = searchParam.get("size") || "10";
@@ -112,6 +112,19 @@ function OrderList() {
     return <Loading />;
   }
 
+  const getStatusClass = (status) => {
+    switch (status) {
+      case 'PENDING':
+        return 'text-secondary';
+      case 'ACTIVE':
+        return 'text-info';
+      case 'FINISHED':
+        return 'text-success';
+      default:
+        return '';
+    }
+  };
+
   return (
     <>
       <div className="d-flex justify-content-between justify-content-center mb-3">
@@ -146,8 +159,8 @@ function OrderList() {
                 });
               }}
             >
-              <option value="asc">Asc</option>
               <option value="desc">Desc</option>
+              <option value="asc">Asc</option>
             </select>
 
             <select
@@ -217,21 +230,15 @@ function OrderList() {
                     <td scope="col">{order.customer.name}</td>
                     <td scope="col">{order.guide ? order.guide.name : "--"}</td>
                     <td scope="col">{order.location.name}</td>
-                    <td scope="col">{order.orderStatus}</td>
                     <td scope="col">
-                      <IconChevronDown size={32} />
+                      <div className={getStatusClass(order.orderStatus)}>
+                        {order.orderStatus}
+                      </div>
+                    </td>
+                    <td scope="col">
+                      <IconChevronDown size={32}/>
                     </td>
 
-                    {/* <td scope="col">
-                                        <button
-                                            data-bs-toggle="collapse"
-                                            data-bs-target={`#${order.id}`} aria-expanded="false"
-                                            aria-controls="collapseExample"
-                                            className="btn btn-info text-white d-flex justify-content-center align-items-center"
-                                            style={{width: 36, height: 36, padding: 0}}>
-                                            <IconChevronDown/>
-                                        </button>
-                                    </td> */}
                   </tr>
                 </tbody>
 
@@ -282,7 +289,7 @@ function OrderList() {
                             <tbody>
                               {order.orderEquipments.map((detail, index) => (
                                 <tr key={detail.id}>
-                                  <td scope="col">{index}</td>
+                                  <td scope="col">{++index}</td>
                                   <td scope="col">
                                     {detail.equipment.name} ({order.day} days)
                                   </td>
