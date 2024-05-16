@@ -178,7 +178,7 @@ function GuideList() {
                     <tbody>
                     {data && data.data.map((guide, index) => (
                         <tr key={guide.id}>
-                            <th scope="row">{index + 1}</th>
+                            <th scope="row">{index + 1 + size * (page - 1)}</th>
                             <td>
                                 <div style={{width: 72, height: 72}}>
                                     <img

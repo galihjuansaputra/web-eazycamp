@@ -13,10 +13,12 @@ function Home() {
 
                     <div className="col-lg-5 col-12 d-flex flex-column align-items-center ">
                         <div className="text-lg-start text-center">
-                            <h1 style={{fontWeight:"500", marginLeft: -6,}} className="display-1">Eazy Camp</h1>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad asperiores at consequuntur
-                                nostrum odio pariatur quis ratione sint veniam voluptates? Consequuntur, maxime
-                                recusandae? Ab ad dicta quia, quos sint veritatis.</p>
+                            <h1 style={{fontWeight: "500", marginLeft: -6,}} className="display-1">Eazy Camp</h1>
+                            <p>your premier destination for top-quality hiking equipment rentals. Whether you're an
+                                experienced hiker or a first-time adventurer, we offer a wide range of gear to suit all
+                                your needs. From sturdy backpacks and reliable tents to durable trekking poles and
+                                comfortable hiking boots, our equipment ensures you can explore the great outdoors with
+                                confidence. </p>
                             <div>
                                 <img
                                     className="img-fluid"

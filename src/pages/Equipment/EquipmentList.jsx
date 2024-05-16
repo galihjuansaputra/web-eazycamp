@@ -165,7 +165,7 @@ function EquipmentList() {
                             <React.Fragment key={equipment.id}>
                                 <tbody>
                                 <tr>
-                                    <th scope="col">{++index}</th>
+                                    <th scope="col">{index + 1 + size * (page - 1)}</th>
                                     <td scope="col">
                                         <div style={{width: 72, height: 72}}>
                                             <img

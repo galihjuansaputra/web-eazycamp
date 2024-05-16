@@ -189,7 +189,6 @@ export default function OrderForm() {
       if (data.details.length !== 0) order["orderEquipmentRequests"] = data.details
       if(data.guide) order["guideId"] = data.guide
       if(data.address) order["sentAddress"] = data.address
-      console.log(order);
       form.append("order", JSON.stringify(order));
       form.append("guarantee", data.image[0]);
       const response = await orderService.addOrder(form);
@@ -577,7 +576,7 @@ export default function OrderForm() {
                   </thead>
                   <tbody>
                     {eqCart.map((cart, index) => (
-                      <tr key={cart.eqId}>
+                      <tr key={index + 1}>
                         <td>{index + 1}</td>
                         <td>{cart.eqName}</td>
                         <td>{cart.quantity}</td>

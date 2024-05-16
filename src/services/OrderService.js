@@ -12,9 +12,15 @@ const OrderService = () => {
         return data;
     }
 
+    const acceptOrder = async (id) => {
+        const { data } = await axiosInstance.put(`/orders/${id}`);
+        return data;
+    }
+
     return {
         getAll,
-        addOrder
+        addOrder,
+        acceptOrder
     }
 }
 

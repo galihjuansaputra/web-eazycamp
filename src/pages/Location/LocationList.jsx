@@ -194,7 +194,7 @@ function LocationList() {
                   aria-controls="collapseExample"
                 >
                   <tr>
-                    <th scope="col">{++index}</th>
+                    <th scope="col">{index + 1 + size * (page - 1)}</th>
                     <td scope="col">{location.name}</td>
                     <td scope="col">{location.description}</td>
                     <td scope="col">
