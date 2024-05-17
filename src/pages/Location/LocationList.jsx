@@ -13,8 +13,6 @@ function LocationList() {
   const locationService = useMemo(() => LocationService(), []);
   const { handleSubmit, register } = useForm();
 
-//   const navigate = useNavigate();
-
   const search = searchParam.get("name") || "";
   const direction = searchParam.get("direction") || "asc";
   const sortBy = searchParam.get("sortBy") || "name";
@@ -209,69 +207,69 @@ function LocationList() {
                       <div className="collapse" id={location.id}>
                         <div className="container-fluid my-3">
                           <div
-                            id={`carouselExampleIndicators-${location.id}`}
-                            className="carousel slide"
+                              id={`carouselExampleIndicators-${location.id}`}
+                              className="carousel slide"
                           >
                             <div className="carousel-indicators">
                               {location.images &&
-                                location.images.map((image, index) => (
-                                  <button
-                                    key={index}
-                                    type="button"
-                                    data-bs-target={`#carouselExampleIndicators-${location.id}`}
-                                    data-bs-slide-to={index}
-                                    className={index === 0 ? "active" : ""}
-                                    aria-current={
-                                      index === 0 ? "true" : undefined
-                                    }
-                                    aria-label={`Slide ${index + 1}`}
-                                  ></button>
-                                ))}
+                                  location.images.map((image, index) => (
+                                      <button
+                                          key={index}
+                                          type="button"
+                                          data-bs-target={`#carouselExampleIndicators-${location.id}`}
+                                          data-bs-slide-to={index}
+                                          className={index === 0 ? "active" : ""}
+                                          aria-current={
+                                            index === 0 ? "true" : undefined
+                                          }
+                                          aria-label={`Slide ${index + 1}`}
+                                      ></button>
+                                  ))}
                             </div>
 
                             <div className="carousel-inner">
                               {location.images &&
-                                location.images.map((image, index) => (
-                                  <div
-                                    key={index}
-                                    className={`carousel-item ${
-                                      index === 0 ? "active" : ""
-                                    }`}
-                                  >
-                                    <img
-                                      src={image.url}
-                                      className="d-block w-100"
-                                      style={{
-                                        height: 240,
-                                        objectFit: "contain",
-                                      }}
-                                      alt={image.url}
-                                    />
-                                  </div>
-                                ))}
+                                  location.images.map((image, index) => (
+                                      <div
+                                          key={index}
+                                          className={`carousel-item ${
+                                              index === 0 ? "active" : ""
+                                          }`}
+                                      >
+                                        <img
+                                            src={image.url}
+                                            className="d-block w-100"
+                                            style={{
+                                              height: 240,
+                                              objectFit: "contain",
+                                            }}
+                                            alt={image.url}
+                                        />
+                                      </div>
+                                  ))}
                             </div>
 
                             <button
-                              className="carousel-control-prev"
-                              type="button"
-                              data-bs-target={`#carouselExampleIndicators-${location.id}`}
-                              data-bs-slide="prev"
+                                className="carousel-control-prev"
+                                type="button"
+                                data-bs-target={`#carouselExampleIndicators-${location.id}`}
+                                data-bs-slide="prev"
                             >
                               <span
-                                className="carousel-control-prev-icon"
-                                aria-hidden="true"
+                                  className="carousel-control-prev-icon"
+                                  aria-hidden="true"
                               ></span>
                               <span className="visually-hidden">Previous</span>
                             </button>
                             <button
-                              className="carousel-control-next"
-                              type="button"
-                              data-bs-target={`#carouselExampleIndicators-${location.id}`}
-                              data-bs-slide="next"
+                                className="carousel-control-next"
+                                type="button"
+                                data-bs-target={`#carouselExampleIndicators-${location.id}`}
+                                data-bs-slide="next"
                             >
                               <span
-                                className="carousel-control-next-icon"
-                                aria-hidden="true"
+                                  className="carousel-control-next-icon"
+                                  aria-hidden="true"
                               ></span>
                               <span className="visually-hidden">Next</span>
                             </button>
@@ -283,6 +281,8 @@ function LocationList() {
                           </p>
                           <h6 className="fw-bold">Safety Tips</h6>
                           <p className="fw-light">{location.safetyTips}</p>
+                          <h6 className="fw-bold">Nearest Store Address</h6>
+                          <p className="fw-light">{location.nearestStoreAddress}</p>
                         </div>
                       </div>
                     </td>

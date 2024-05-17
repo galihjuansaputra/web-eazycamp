@@ -17,10 +17,16 @@ const OrderService = () => {
         return data;
     }
 
+    const rejectOrder = async (id) => {
+        const { data } = await axiosInstance.put(`/orders/reject/${id}`);
+        return data;
+    }
+
     return {
         getAll,
         addOrder,
-        acceptOrder
+        acceptOrder,
+        rejectOrder
     }
 }
 

@@ -1,6 +1,6 @@
 import {
     IconBuildingStore,
-    IconDashboard,
+    IconDashboard, IconInfoCircle,
     IconLogout,
     IconMountain, IconPick,
     IconReceipt,
@@ -70,9 +70,9 @@ function Sidebar() {
                             Order
                     </Link>
 
-                    <Link to="/dashboard/admin" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
-                            <IconUserCog style={{marginRight: 10}}/>
-                            Admin
+                    <Link to="/dashboard/information" className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">
+                            <IconInfoCircle style={{marginRight: 10}}/>
+                            Information
                     </Link>
 
                     <a onClick={handleLogout} className="text-decoration-none d-flex align-items-center cursor-pointer border-0 list-group-item list-group-item-action list-group-item-dark p-3 mb-2 rounded-4">

@@ -4,7 +4,7 @@ import Home from "@pages/Home/Home.jsx";
 import Login from "@pages/Authentication/Login/Login.jsx";
 import Dashboard from "@pages/Dashboard/Dashboard.jsx";
 import Order from "@pages/Order/Order.jsx";
-import Admin from "@pages/Admin/Admin.jsx";
+import Information from "@pages/Information/Information.jsx";
 import ProtectedRoute from "@/routes/protectedRoute.jsx";
 import CustomerForm from "@pages/Customer/CustomerForm.jsx";
 import Customer from "@pages/Customer/Customer.jsx";
@@ -87,8 +87,8 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "admin",
-        element: <Admin />,
+        path: "information",
+        element: <Information />,
       },
     ],
   },

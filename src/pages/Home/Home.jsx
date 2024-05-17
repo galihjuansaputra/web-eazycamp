@@ -1,14 +1,20 @@
+import {useNavigate} from "react-router-dom";
+
 function Home() {
+    const navigate = useNavigate();
+
     return (
         <>
-            <div
-                className="container vh-100">
-                <div className="row justify-content-center align-items-center">
-                    <div className="col-lg-5 col-12 d-flex flex-column align-items-center">
+            <div className="container vh-100">
+                <div className="row vh-100 justify-content-center align-items-center">
+                    <div className="col-lg-5 col-12 my-4 d-flex flex-column align-items-center">
                         <img
-                            className="img-fluid"
-                            style={{width: 500}}
-                            src="/src/assets/screen_mockup.png" alt=""/>
+                            onClick={()=> {
+                                navigate('/login')
+                            }}
+                            className="cursor-pointer img-fluid"
+                            style={{width: 300}}
+                            src="/src/assets/screen_mockup.svg" alt=""/>
                     </div>
 
                     <div className="col-lg-5 col-12 d-flex flex-column align-items-center ">

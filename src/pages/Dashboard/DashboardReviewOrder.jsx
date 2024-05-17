@@ -26,8 +26,8 @@ function DashboardReviewOrder({ orders }) {
                             </tr>
                             </thead>
                             <tbody>
-                            {pendingOrders.map(order => (
-                                <tr key={order.id}>
+                            {pendingOrders.map((order, index) => (
+                                <tr key={`pending_${order.id}_${index}`}>
                                     <td>{order.customer.name}</td>
                                     <td>{order.date}</td>
                                     <td className="text-secondary">{order.orderStatus}</td>
@@ -56,8 +56,8 @@ function DashboardReviewOrder({ orders }) {
                             </tr>
                             </thead>
                             <tbody>
-                            {activeOrders.map(order => (
-                                <tr key={order.id}>
+                            {activeOrders.map((order, index) => (
+                                <tr key={`active_${order.id}_${index}`}>
                                     <td>{order.customer.name}</td>
                                     <td>{order.date}</td>
                                     <td className="text-info">{order.orderStatus}</td>

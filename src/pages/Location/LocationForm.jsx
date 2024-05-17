@@ -4,6 +4,7 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import * as z from "zod";
 import {useState} from "react";
 import LocationService from "@services/LocationService.js";
+import Swal from "sweetalert2";
 
 const createSchema = z.object({
     id: z.string().optional(),
@@ -11,12 +12,13 @@ const createSchema = z.object({
     description: z.string().min(1, "Description must be filled!"),
     recommendedActivity: z.string().min(1, "Recommended activity must be filled!"),
     safetyTips: z.string().min(1, "Safety tips must be filled!"),
-    images: z.any()
+    nearestStoreAddress: z.string().min(1, "Safety tips must be filled!"),
+    images: z.any(),
 });
 
 const locationService = LocationService();
 
-function LocationForm(refetch) {
+function LocationForm({refetch}) {
 
     const {
         register,
@@ -60,6 +62,7 @@ function LocationForm(refetch) {
                 description: data.description,
                 recommendedActivity: data.recommendedActivity,
                 safetyTips: data.safetyTips,
+                nearestStoreAddress: data.nearestStoreAddress,
             };
             form.append("location", JSON.stringify(location));
 
@@ -71,17 +74,32 @@ function LocationForm(refetch) {
             await locationService.create(form);
             clearForm();
             navigate("/dashboard/location");
+            // Show success message
+            await Swal.fire({
+                title: "Success",
+                text: "Location has been created successfully.",
+                icon: "success",
+                timer: 2000, // Auto close timer in milliseconds
+                showConfirmButton: false
+            });
         } catch (err) {
             console.error("Error submitting form:", err);
+            // Show error message
+            await Swal.fire({
+                title: "Error",
+                text: "Failed to create location. Please try again later.\n" + err,
+                icon: "error",
+                confirmButtonText: "OK"
+            });
         }
-        refetch.refetch();
+        refetch();
+        clearForm();
     };
 
     const clearForm = () => {
         clearErrors();
         reset();
     };
-
 
     return (
         <>
@@ -102,9 +120,7 @@ function LocationForm(refetch) {
                         </div>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="modal-body">
-
-                                {/*    Modal Table */}
-
+                                {/* Modal Table */}
                                 <label htmlFor="name" className="mb-2">Location Name</label>
                                 <input
                                     {...register("name")}
@@ -112,27 +128,64 @@ function LocationForm(refetch) {
                                     name="name"
                                     id="name"
                                     autoComplete="off"
-                                    className="form-control form-control mb-3 rounded-1"/>
+                                    className={`form-control mb-3 rounded-1 ${errors.name && "is-invalid"}`}
+                                />
+                                {errors.name && (
+                                    <div className="invalid-feedback">{errors.name.message}</div>
+                                )}
 
                                 <label htmlFor="description" className="form-label">Description</label>
                                 <textarea
                                     {...register("description")}
                                     name="description"
-                                    className="form-control mb-3" id="description" rows="3" style={{resize: "none"}}/>
+                                    className={`form-control mb-3 ${errors.description && "is-invalid"}`}
+                                    id="description"
+                                    rows="3"
+                                    style={{resize: "none"}}
+                                />
+                                {errors.description && (
+                                    <div className="invalid-feedback">{errors.description.message}</div>
+                                )}
 
                                 <label htmlFor="recommendedActivity" className="form-label">Recommended Activity</label>
                                 <textarea
                                     {...register("recommendedActivity")}
                                     name="recommendedActivity"
-                                    className="form-control mb-3" id="recommendedActivity" rows="3"
-                                    style={{resize: "none"}}/>
+                                    className={`form-control mb-3 ${errors.recommendedActivity && "is-invalid"}`}
+                                    id="recommendedActivity"
+                                    rows="3"
+                                    style={{resize: "none"}}
+                                />
+                                {errors.recommendedActivity && (
+                                    <div className="invalid-feedback">{errors.recommendedActivity.message}</div>
+                                )}
 
                                 <label htmlFor="safetyTips" className="form-label">Safety Tips</label>
                                 <textarea
                                     {...register("safetyTips")}
                                     name="safetyTips"
-                                    className="form-control mb-3" id="safetyTips" rows="3"
-                                    style={{resize: "none"}}/>
+                                    className={`form-control mb-3 ${errors.safetyTips && "is-invalid"}`}
+                                    id="safetyTips"
+                                    rows="3"
+                                    style={{resize: "none"}}
+                                />
+                                {errors.safetyTips && (
+                                    <div className="invalid-feedback">{errors.safetyTips.message}</div>
+                                )}
+
+                                <label htmlFor="nearestStoreAddress" className="form-label">Nearest Store
+                                    Address</label>
+                                <textarea
+                                    {...register("nearestStoreAddress")}
+                                    name="nearestStoreAddress"
+                                    className={`form-control mb-3 ${errors.nearestStoreAddress && "is-invalid"}`}
+                                    id="nearestStoreAddress"
+                                    rows="3"
+                                    style={{resize: "none"}}
+                                />
+                                {errors.nearestStoreAddress && (
+                                    <div className="invalid-feedback">{errors.nearestStoreAddress.message}</div>
+                                )}
 
                                 <div className="mb-3">
                                     <label htmlFor="images" className="form-label">
@@ -166,19 +219,14 @@ function LocationForm(refetch) {
                                         <div className="invalid-feedback">{errors.images.message}</div>
                                     )}
                                 </div>
-
                             </div>
                             <div className="modal-footer">
                                 <button disabled={!isValid} type="submit" className="btn btn-success text-white"
                                         data-bs-dismiss="modal">
                                     Save
                                 </button>
-                                <button
-                                    onClick={handleBack}
-                                    type="button"
-                                    className="btn btn-danger text-white"
-                                    data-bs-dismiss="modal"
-                                >
+                                <button onClick={handleBack} type="button" className="btn btn-danger text-white"
+                                        data-bs-dismiss="modal">
                                     Close
                                 </button>
                             </div>

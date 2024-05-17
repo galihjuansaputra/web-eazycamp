@@ -5,13 +5,18 @@ import * as z from "zod";
 import {useEffect, useState} from "react";
 import Swal from "sweetalert2";
 import EquipmentService from "@services/EquipmentService.js";
+import {number} from "zod";
 
 const createSchema = z.object({
     id: z.string().optional(),
-    name: z.string().min(1, "Name must be filled!"),
-    description: z.string().min(1, "Description must be filled!"),
-    price: z.string().min(1, "Recommended activity must be filled!"),
-    stock: z.string().min(1, "Safety tips must be filled!"),
+    name: z.string().min(1, "Name must be at least 1 character long!").max(255, "Name cannot exceed 255 characters!"),
+    description: z.string().min(1, "Description must be at least 1 character long!").max(255, "Description cannot exceed 255 characters!"),
+    price: z.string().or(number()).refine((val) => !isNaN(parseFloat(val)), "harga harus berupa angka")
+        .transform((val) => parseInt(val))
+        .refine((val) => val >= 0, "harga harus lebih dari 0"),
+    stock: z.string().or(number()).refine((val) => !isNaN(parseFloat(val)), "stock harus berupa angka")
+        .transform((val) => parseInt(val))
+        .refine((val) => val >= 0, "stock harus lebih dari 0"),
     images: z.any()
 });
 
@@ -53,7 +58,7 @@ function EquipmentForm({refetch}) {
     };
 
     const onSubmit = async (data) => {
-        if (data.id){
+        if (data.id) {
             try {
                 const form = new FormData();
 
@@ -74,11 +79,23 @@ function EquipmentForm({refetch}) {
 
                 await equipmentService.update(form);
                 clearForm();
+                await Swal.fire({
+                    title: 'Success',
+                    text: 'Equipment updated successfully',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
                 navigate("/dashboard/equipment");
             } catch (err) {
                 console.error("Error submitting form:", err);
+                await Swal.fire({
+                    title: 'Error',
+                    text: 'There was an error updating the equipment. Please try again.\n' + err,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
-        }else {
+        } else {
             try {
                 const form = new FormData();
 
@@ -98,12 +115,24 @@ function EquipmentForm({refetch}) {
 
                 await equipmentService.create(form);
                 clearForm();
+                await Swal.fire({
+                    title: 'Success',
+                    text: 'Equipment created successfully',
+                    icon: 'success',
+                    confirmButtonText: 'OK'
+                });
                 navigate("/dashboard/equipment");
             } catch (err) {
                 console.error("Error submitting form:", err);
+                await Swal.fire({
+                    title: 'Error',
+                    text: 'There was an error creating the equipment. Please try again.' + err,
+                    icon: 'error',
+                    confirmButtonText: 'OK'
+                });
             }
         }
-
+        clearForm()
         refetch();
     };
 
@@ -180,9 +209,7 @@ function EquipmentForm({refetch}) {
                         </div>
                         <form onSubmit={handleSubmit(onSubmit)}>
                             <div className="modal-body">
-
-                                {/*    Modal Table */}
-
+                                {/* Product Name */}
                                 <label htmlFor="name" className="mb-2">Product Name</label>
                                 <input
                                     {...register("name")}
@@ -190,31 +217,55 @@ function EquipmentForm({refetch}) {
                                     type="text"
                                     name="name"
                                     id="name"
-                                    className="form-control form-control mb-3 rounded-1"/>
+                                    className={`form-control mb-3 rounded-1 ${errors.name ? "is-invalid" : ""}`}
+                                />
+                                {errors.name && (
+                                    <div className="invalid-feedback">{errors.name.message}</div>
+                                )}
 
+                                {/* Description */}
                                 <label htmlFor="description" className="form-label">Description</label>
                                 <textarea
                                     {...register("description")}
                                     name="description"
-                                    className="form-control mb-3" id="description" rows="3"
-                                    style={{resize: "none"}}/>
+                                    className={`form-control mb-3 ${errors.description ? "is-invalid" : ""}`}
+                                    id="description"
+                                    rows="3"
+                                    style={{resize: "none"}}
+                                />
+                                {errors.description && (
+                                    <div className="invalid-feedback">{errors.description.message}</div>
+                                )}
 
+                                {/* Price */}
                                 <label htmlFor="price" className="mb-2">Price</label>
                                 <input
                                     {...register("price")}
-                                    type="text"
+                                    type="number"
+                                    min={1}
                                     name="price"
                                     id="price"
-                                    className="form-control form-control mb-3 rounded-1"/>
+                                    className={`form-control mb-3 rounded-1 ${errors.price ? "is-invalid" : ""}`}
+                                />
+                                {errors.price && (
+                                    <div className="invalid-feedback">{errors.price.message}</div>
+                                )}
 
+                                {/* Stock */}
                                 <label htmlFor="stock" className="mb-2">Stock</label>
                                 <input
                                     {...register("stock")}
-                                    type="text"
+                                    type="number"
+                                    min={1}
                                     name="stock"
                                     id="stock"
-                                    className="form-control form-control mb-3 rounded-1"/>
+                                    className={`form-control mb-3 rounded-1 ${errors.stock ? "is-invalid" : ""}`}
+                                />
+                                {errors.stock && (
+                                    <div className="invalid-feedback">{errors.stock.message}</div>
+                                )}
 
+                                {/* Images */}
                                 <div className="mb-3">
                                     <label htmlFor="images" className="form-label">
                                         <span>Images</span>
@@ -238,7 +289,7 @@ function EquipmentForm({refetch}) {
                                         })}
                                         type="file"
                                         accept="image/png, image/jpeg, image/jpg"
-                                        className={`form-control ${errors.images && "is-invalid"}`}
+                                        className={`form-control ${errors.images ? "is-invalid" : ""}`}
                                         name="images"
                                         id="images"
                                         multiple
@@ -247,23 +298,19 @@ function EquipmentForm({refetch}) {
                                         <div className="invalid-feedback">{errors.images.message}</div>
                                     )}
                                 </div>
-
                             </div>
                             <div className="modal-footer">
                                 <button disabled={!isValid} type="submit" className="btn btn-success text-white"
                                         data-bs-dismiss="modal">
                                     Save
                                 </button>
-                                <button
-                                    onClick={handleBack}
-                                    type="button"
-                                    className="btn btn-danger text-white"
-                                    data-bs-dismiss="modal"
-                                >
+                                <button onClick={handleBack} type="button" className="btn btn-danger text-white"
+                                        data-bs-dismiss="modal">
                                     Close
                                 </button>
                             </div>
                         </form>
+
 
                     </div>
                 </div>

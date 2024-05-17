@@ -39,7 +39,7 @@ function Login() {
             await Swal.fire({
                 icon: "error",
                 title: "Login gagal",
-                text: "username atau password salah",
+                text: error,
             });
         }
     };

@@ -24,10 +24,7 @@ const createSchema = z.object({
   customer: z.string().min(1, "customer wajib di isi!"),
   guide: z.string().optional(),
   location: z.string().min(1, "lokasi wajib di isi!"),
-  date: z.string().refine((tanggal) => {
-    const tgl = new Date(tanggal);
-    return !isNaN(tgl) && tgl > new Date();
-  }, "masukan tanggal tidak boleh kurang dari tanggal saat ini"),
+  date: z.any(),
   day: z
     .string()
     .refine((val) => !isNaN(parseFloat(val)), "hari sewa harus berupa angka")
@@ -205,7 +202,7 @@ export default function OrderForm() {
 
   return (
     <div className="d-flex flex-lg-row flex-column">
-      <div className="flex-fill p-3">
+      <div className="flex-fill p-3 pe-4 ps-0">
         <h2 className="mb-4">Browse Equipment</h2>
         <div className="shadow-sm rounded-2">
           <div className="d-flex justify-content-between align-items-center mt-4">
@@ -382,7 +379,7 @@ export default function OrderForm() {
           </div>
         </div>
       </div>
-      <div className="flex-fill p-3">
+      <div className="flex-fill p-3 ps-0">
       <div>
           <div className="shadow-sm rounded-2">
             <h2 className="mb-4">Transaction Form</h2>
@@ -397,6 +394,7 @@ export default function OrderForm() {
                   className={`form-control ${errors.date && "is-invalid"}`}
                   id="date"
                   name="date"
+                  required
                 />
                 {errors.date && (
                   <div className="invalid-feedback">{errors.date.message}</div>

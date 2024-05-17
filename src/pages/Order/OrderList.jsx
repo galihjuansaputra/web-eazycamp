@@ -29,10 +29,6 @@ function OrderList() {
         hasNext: false,
     });
 
-    // const selectId = async (id) => {
-    //     setOrderId(id)
-    // }
-
     const onSubmitSearch = ({search}) => {
         setSearchParam({
             orderId: search || "",
@@ -122,7 +118,7 @@ function OrderList() {
         }
     };
 
-    const handleAcceptOrder = async (orderId) => {
+    const handleOrder = async (orderId) => {
         const swalCustom = Swal.mixin({
             customClass: {
                 confirmButton: "btn btn-success text-white fw-bold me-2",
@@ -136,23 +132,77 @@ function OrderList() {
             icon: "info",
             confirmButton: "btn btn-success",
             confirmButtonText: "Accept",
-            denyButtonText: `Don't save`
+            denyButtonText: `Cancel`
         }).then(async (result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 await orderService.acceptOrder(orderId);
-                Swal.fire("Accepted!", "", "success");
+                await Swal.fire("Accepted!", "", "success");
                 await refetch();
             }
         });
     }
 
     const handleRejectOrder = async (orderId) => {
-        return 0;
+        const swalCustom = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success text-white fw-bold me-2",
+                cancelButton: "btn btn-danger text-white fw-bold"
+            },
+            buttonsStyling: false
+        });
+        swalCustom.fire({
+            title: "Do you want to reject the order?",
+            showCancelButton: true,
+            icon: "info",
+            confirmButton: "btn btn-success",
+            confirmButtonText: "Reject",
+            denyButtonText: `Cancel`
+        }).then(async (result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                try {
+                    await orderService.rejectOrder(orderId);
+                    await Swal.fire({
+                        title: "Order Rejected!",
+                        text: "The order has been successfully rejected.",
+                        icon: "success",
+                        confirmButtonText: "OK"
+                    });
+                    await refetch();
+                } catch (err) {
+                    console.error(err);
+                    await Swal.fire({
+                        title: "Error",
+                        text: "There was an issue rejecting the order. Please try again.\n" + err,
+                        icon: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
+            }
+        });
     }
 
-    const handleFinishOrder = async (orderId) => {
-        return 0;
+    const handleAcceptRejectOrder = (status) => {
+        if (status === "REJECTED"){
+            return "disabled";
+        }
+        if (status === "PENDING"){
+            return;
+        }else{
+            return "disabled";
+        }
+    }
+
+    const handleFinishOrder = async (status) => {
+        if (status === "REJECTED"){
+            return "disabled";
+        }
+        if (status === "ACTIVE"){
+            return;
+        }else{
+            return "disabled";
+        }
     }
 
     return (
@@ -344,18 +394,18 @@ function OrderList() {
                                                             </tbody>
                                                         </table>
                                                         <button
-                                                            onClick={() => handleAcceptOrder(order.id)}
-                                                            className={`btn btn-success text-white fw-bold me-2 ${order.payment && order.payment.status !== "ACTIVE" ? "disabled" : ""}`}>
+                                                            onClick={() => handleOrder(order.id)}
+                                                            className={`btn btn-success text-white fw-bold me-2 ${handleAcceptRejectOrder(order.orderStatus)}`}>
                                                             Accept Order
                                                         </button>
                                                         <button
                                                             onClick={() => handleRejectOrder(order.id)}
-                                                            className={`btn btn-danger text-white fw-bold me-2 ${order.payment && order.payment.status !== "ACTIVE" ? "disabled" : ""}`}>
+                                                            className={`btn btn-danger text-white fw-bold me-2 ${handleAcceptRejectOrder(order.orderStatus)}`}>
                                                             Reject Order
                                                         </button>
                                                         <button
-                                                            onClick={() => handleFinishOrder(order.id)}
-                                                            className={`btn btn-info text-white fw-bold me-2 ${order.payment && order.payment.status !== "ACTIVE" ? "" : "disabled"}`}>
+                                                            onClick={() => handleOrder(order.id)}
+                                                            className={`btn btn-info text-white fw-bold me-2 ${order.orderStatus === "FINISHED" || order.orderStatus === "PENDING" || order.orderStatus === "REJECTED" ? "disabled" : ""}`}>
                                                             Finish Order
                                                         </button>
                                                     </div>
