@@ -29,7 +29,6 @@ function Login() {
     });
 
     const onSubmit = async (data) => {
-        console.log(data)
         try {
             const response = await authService.login(data);
             if (response && response.statusCode === 200) {
@@ -40,7 +39,7 @@ function Login() {
             await Swal.fire({
                 icon: "error",
                 title: "Login gagal",
-                text: "username atau password salah",
+                text: error,
             });
         }
     };
